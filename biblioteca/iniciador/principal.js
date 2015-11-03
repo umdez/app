@@ -19,7 +19,7 @@ var baseBiblioteca = require('../indice');
 // Loading non -xmpp libraries
 //var User = require('../lib/users.js').User;
 
-exports.executar = function(configuracao, realizado) {
+exports.prosseguir = function(configuracao, realizado) {
 
   // Criamos o servidor.
   var servidor = new xmpp.C2SServer(configuracao);
@@ -39,60 +39,61 @@ exports.executar = function(configuracao, realizado) {
 
   // Evento ao conectar. Quando um cliente conecta.
   servidor.on('connect', function(cliente) {
-	// Autentica o cliente.
-	cliente.on('authenticate', function(opcs, chamarDepois) {
-	  console.log('Cliente autenticado');
-	  
-	  if (true) { // Por enquanto sempre validar a autenticação
-        chamarDepois(null, opcs);
-	  } else {
-        chamarDepois(new Error("Falha de autenticação."));
-	  }
-	});
 
-	// Registra determinado JID
-	cliente.on('register', function(opcs, chamarDepois) {
-	  console.log('Cliente registrado');
-	   
-	  if (true) {
+    // Evento disparado quando usuário realiza autenticação.
+    cliente.on('authenticate', function(opcs, chamarDepois) {
+      console.log('Cliente autenticado');
+
+      if (true) { // Por enquanto sempre validar a autenticação
+        chamarDepois(null, opcs);
+      } else {
+        chamarDepois(new Error("Falha de autenticação."));
+      }
+    });
+
+    // Evento disparado quando o cliente requisita registro para determinado JID
+    cliente.on('register', function(opcs, chamarDepois) {
+      console.log('Cliente registrado');
+ 
+      if (true) {
         chamarDepois(true);
       } else{
-		var erro = new Error("conflict");
-		erro.code = 409;
-		erro.type = "cancel";
-		chamarDepois(err);
+        var erro = new Error("conflict");
+        erro.code = 409;
+        erro.type = "cancel";
+        chamarDepois(err);
       }
-            
-	});
+
+    });
 	
-	// Cliente desconectou
+    // Evento disparado quando usuário desconecta do servidor
 	cliente.on('disconnect', function () {
       console.log('Cliente desconectado');
     });
-	
-	// Cliente finalizou conexão
+
+    // Evento disparado quando conexão do cliente for finalizada
     cliente.on('end', function () {
-	  // A conexão é finalizada e então fechada.
+      // A conexão é finalizada e então fechada.
       // @veja http://nodejs.org/api/net.html#net_event_end
-      console.log('Cliente finalizou conexão');
+      console.log('Conexão do cliente finalizada');
     });
-  
+
     // Cliente está online
     cliente.on('online', function () {
       console.log('Cliente online');
     });
-	
-	// Cliente fechou conexão
-	cliente.on('close', function () {
+
+    // Cliente fechou conexão
+    cliente.on('close', function () {
       console.log('Cliente fechou conexão');
     });
-	
-	// Mensagem enviada pelo cliente
-	cliente.on('stanza', function (stanza) {
+
+    // Mensagem enviada pelo cliente
+    cliente.on('stanza', function (stanza) {
       console.log('Cliente: ' + cliente.jid.toString() + ' enviou a seguinte mensagem: ' + stanza.toString());
     });
 
-	// Cliente conectou
+    // Cliente conectou
     cliente.on('connect', function () {
       console.log('Cliente conectado');
     });
