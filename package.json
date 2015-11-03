@@ -4,12 +4,19 @@
   "description": "Servidor XMPP utilizando biblioteca node-xmpp-server",
   "keywords": "XMPP Servidor node-xmpp-server jabber XEP",
   "author": "Léo Felippe <leofelippedias@hotmail.com.br>",
-  "main": "./nucleo/principal.js",
+  "main": "./biblioteca/nucleo/principal.js",
   "dependencies": {
+    "node-xmpp-core": "~1.0.0",
     "node-xmpp-server": "2.1.0",
     "websocket": ">=1.0.4",
-    "ltx": ">=0.1.3",
-    "jsconfig": "0.2.0"
+    "ltx": "0.8.0",
+    "jsconfig": "0.2.0",
+	"bluebird": "2.9.25",
+	"sequelize": "2.0.0-rc8",
+	"pem": "~1.7.2",
+	"cors": "2.6.0",
+	"bunyan": "1.3.5",
+    "bunyan-logstash-tcp": "~0.3.4"
   },
   "devDependencies": {
     "mocha": "*",
