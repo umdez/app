@@ -65,9 +65,9 @@ exports.prosseguir = function(configuracao, realizado) {
       }
 
     });
-	
+
     // Evento disparado quando usuário desconecta do servidor
-	cliente.on('disconnect', function () {
+    cliente.on('disconnect', function () {
       console.log('Cliente desconectado');
     });
 
