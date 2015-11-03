@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-  Roteador: require('./roteador/indice')
+  Roteador: require('./rotas/indice')
 };
