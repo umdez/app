@@ -3,6 +3,7 @@
 var pasta = require('path');
 var configuracao = require('jsconfig');
 var pastaConfiguracaoPadrao = pasta.join(__dirname, "/configuracao/configuracao.js");
+var Registrador = require('./biblioteca/nucleo/Registrador')('iniciar');
 
 configuracao.defaults(pastaConfiguracaoPadrao);
 
@@ -38,7 +39,7 @@ configuracao.load(function (args, opcs) {
     switch(etapa) {
       case 'websocket_pronto':
         // Servidor websocket pronto!
-        console.log('Servidor websocket pronto!');
+		Registrador.debug('Servidor websocket pronto!');
       break;
     }
   });
