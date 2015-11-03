@@ -4,7 +4,7 @@ var xmpp = require('node-xmpp-server');
 var baseBiblioteca = require('../indice');
 
 // Carrega todos os arquivos necessários
-//var Logger      = require('../modules/logger');
+var RegistradorEventos = require('../nucleo/RegistradorEventos'); // Bom notar que utilizamos bunyan ao invez do winston nos outros arquivos.
 //var Router      = require('../modules/router');
 //var Offline     = require('../modules/offline');
 //var Version     = require('../modules/version'); 
@@ -19,11 +19,14 @@ var baseBiblioteca = require('../indice');
 // Loading non -xmpp libraries
 //var User = require('../lib/users.js').User;
 
-exports.prosseguir = function(configuracao, realizado) {
+exports.prosseguir = function(configuracao, pronto) {
 
   // Criamos o servidor.
   var servidor = new xmpp.C2SServer(configuracao);
 
+  // Adiciona o registro para os eventos do servidor e dos clientes de cada servidor.
+  RegistradorEventos.adcRegistroEventosPara(servidor, configuracao.logger);
+  
   // Configure the mods at the server level!
   //Router.configure(server, config.router); 
   //Logger.configure(server, config.logger);
@@ -107,5 +110,5 @@ exports.prosseguir = function(configuracao, realizado) {
 
   // Esta é a função chamado quando o servidor estiver pronto e realizado. É util quando executado em um outro código.
   // Necessario ter certeza que este é o local correto para isso no futuro porque C2S e S2S talvez não estarão prontos.
-  // realizado();
+  // pronto();
 }
