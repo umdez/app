@@ -25,7 +25,8 @@ RegistradorEventos.prototype.adcRegistroEventosPara = function (servidor, seLiga
 	  
 	// http://xmpp.org/extensions/xep-0160.html
     var formatarRegistro = function(cliente, mensagem) {
-      return [cliente.socket.remoteAddress, cliente.streamId, mensagem].join(" "); 
+      //Preciso descobrir como acessar o remoteAddress nesta nova versão do node-xmpp-server
+      return [/*cliente.socket.remoteAddress,*/ cliente.streamId, mensagem].join(" "); 
     }  
 	  
     servidor.on("connect", function(cliente) {
@@ -84,4 +85,4 @@ RegistradorEventos.prototype.info = function(mensagem) {
   }
 } 
 
-module.exports = RegistradorEventos;
+module.exports = new RegistradorEventos();
