@@ -78,28 +78,29 @@ exports.prosseguir = function(configuracao, realizado) {
       console.log('Conexão do cliente finalizada');
     });
 
-    // Cliente está online
+    // Evento disparado quando cliente autenticou e ou registrou e está online.
     cliente.on('online', function () {
       console.log('Cliente online');
     });
 
-    // Cliente fechou conexão
+    // Evento disparado quando a conexão do cliente foi fechada
     cliente.on('close', function () {
       console.log('Cliente fechou conexão');
     });
 
-    // Mensagem enviada pelo cliente
+    // Evento disparado quando chega uma mensagem enviada pelo cliente remetente
     cliente.on('stanza', function (stanza) {
       console.log('Cliente: ' + cliente.jid.toString() + ' enviou a seguinte mensagem: ' + stanza.toString());
     });
 
-    // Cliente conectou
+    // Evento disparado quando cliente realizar conexão
     cliente.on('connect', function () {
       console.log('Cliente conectado');
     });
   });
 
   // Evento ao desconectar, quando um cliente disconecta.
+  // Acho que isso está obsoleto nesta versão do node-xmpp-server.
   servidor.on("disconnect", function(cliente) {
     console.log('Cliente desconectado do servidor');
   });
