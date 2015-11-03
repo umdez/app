@@ -32,7 +32,7 @@ XRotas.prototype.manipular = function (stanza) {}; // jshint ignore:line
  * Envia mensagens e começa a fazer o roteamento.
  */
 XRotas.prototype.enviar = function (stanza) {
-  Registrador.debug(this.name + ' send stanza: ' + stanza.toString());
+  Registrador.debug(this.nome + ' send stanza: ' + stanza.toString());
   this.emit('enviar', stanza);
 };
 
