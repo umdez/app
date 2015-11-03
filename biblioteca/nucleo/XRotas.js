@@ -3,7 +3,7 @@
 var util = require('util');
 var EmissorEvento = require('events').EventEmitter;
 var ltx = require('ltx');
-var registrador = require('./Logger')('xrotas');
+var Registrador = require('./Registrador');
 
 function XRotas() {
   
@@ -32,7 +32,7 @@ XRotas.prototype.manipular = function (stanza) {}; // jshint ignore:line
  * Envia mensagens e começa a fazer o roteamento.
  */
 XRotas.prototype.enviar = function (stanza) {
-  // logger.debug(this.name + ' send stanza: ' + stanza.toString());
+  Registrador.debug(this.name + ' send stanza: ' + stanza.toString());
   this.emit('enviar', stanza);
 };
 
@@ -91,7 +91,7 @@ XRotas.prototype.adcEscutaPara = function (rota) {
   // Adiciona evento de stanza para a rota
   rota.on('stanza', function (stanza) {
     if (stanza) {
-      // logger.debug(rota.nome + ' forward to ' + esteObjeto.nome + ':  ' + stanza.attrs.from + ' -> ' + stanza.attrs.to);
+      Registrador.debug(rota.nome + ' forward to ' + esteObjeto.nome + ':  ' + stanza.attrs.from + ' -> ' + stanza.attrs.to);
       esteObjeto.manipular(stanza);
     }
   });
@@ -106,7 +106,7 @@ XRotas.prototype.encadearRotas = function (rota) {
   // despacha evento inverso para a rota
   rota.on('enviar', function (stanza) {
     if (stanza) {
-      //logger.debug(rota.nome + ' send out to ' + esteObjeto.nome + ':  ' + stanza.attrs.from + ' -> ' + stanza.attrs.to);
+      Registrador.debug(rota.nome + ' send out to ' + esteObjeto.nome + ':  ' + stanza.attrs.from + ' -> ' + stanza.attrs.to);
       esteObjeto.enviar(stanza);
     }
   });
