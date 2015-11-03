@@ -33,15 +33,14 @@ configuracao.load(function (args, opcs) {
 
   // Chamamos o arquivo principal, ele vai executar os outros.
   var servidor = require('./biblioteca/iniciador/principal.js');
-  servidor.executar(configuracao, function(etapa) {
-	  
-	switch(etapa) {
+  servidor.prosseguir(configuracao, function(etapa) {
+
+    switch(etapa) {
       case 'websocket_pronto':
-	    // Servidor websocket pronto!
-	    console.log('Servidor websocket pronto!');
-	  break;
-	  
-	}
-    
+        // Servidor websocket pronto!
+        console.log('Servidor websocket pronto!');
+      break;
+    }
+
   });
 });
