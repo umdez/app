@@ -16,7 +16,7 @@ configuracao.cli({
   domain: ['domain', ['d', "dominio do servidor xmpp",  'host']],
   port:   ['port',   ['p', "porta do servidor xmpp",  'number']],
   configuracao: ['c', "pasta para carregar arquivo de configuracao", 'path', pastaConfiguracaoPadrao],
-  clienteventlogger: ['clienteventlogger', [false, "Registra eventos dos clientes em stdout"]],
+  logger: ['logger', [false, "Registra eventos dos clientes em stdout"]],
   websocket: ['websocket', [false, "Não escutar conexões websocket"]],
 });
 
@@ -32,7 +32,7 @@ configuracao.load(function (args, opcs) {
   }
 
   // Chamamos o arquivo principal, ele vai executar os outros.
-  var servidor = require('./biblioteca/iniciador/principal.js');
+  var servidor = require('./biblioteca/iniciador/principal');
   servidor.prosseguir(configuracao, function(etapa) {
 
     switch(etapa) {
@@ -41,6 +41,6 @@ configuracao.load(function (args, opcs) {
         console.log('Servidor websocket pronto!');
       break;
     }
-
   });
+  
 });
