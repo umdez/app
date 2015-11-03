@@ -16,7 +16,7 @@ configuracao.cli({
   domain: ['domain', ['d', "dominio do servidor xmpp",  'host']],
   port:   ['port',   ['p', "porta do servidor xmpp",  'number']],
   configuracao: ['c', "pasta para carregar arquivo de configuracao", 'path', pastaConfiguracaoPadrao],
-  logger: ['logger', [false, "Registra em stdout"]],
+  clienteventlogger: ['clienteventlogger', [false, "Registra eventos dos clientes em stdout"]],
   websocket: ['websocket', [false, "Não escutar conexões websocket"]],
 });
 
