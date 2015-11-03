@@ -1,84 +1,83 @@
 'use strict';
 
 var util = require('util');
-var XRoute = require('../nucleo/XRotas');
+var XRotas = require('../nucleo/XRotas');
 var Promessa = require('bluebird');
-
 var JID = require('node-xmpp-core').JID;
-var XmppVerify = require('../nucleo/VerificaXmpp');
-var registro = require('../nucleo/Registro')('rotasconexao');
+var VerificaXmpp = require('../nucleo/VerificaXmpp');
+var Registrador = require('../nucleo/Registrador')('rotasconexao');
 
 /**
- * Manages connections and route the requests to other routes
+ * Gerencia as conexões e roteia as solicitações para outras rotas
  *
- * TODO: check that to and from values fit to stream, reject messages where the from value does not fit
+ * Afazer: Verificar se os valores de to e from são adequados para o cliente, rejeitar mensagens onde o valor do from não é adequado.
  */
 function RotaConexao(storage) {
-  XRoute.call(this);
+  XRotas.call(this);
 
-  this.storage = storage;
+  //this.storage = storage;
 
-  // connection manager e.g. tcp, bosh etc
-  this.connectionManagers = [];
+  // Gerência de conexões, por exemplo, tcp, bosh etc
+  this.gerenciaConexoes = [];
 
-  // authentication modules
-  this.authMethods = [];
+  // Modulos de autenticação
+  this.metodosAutenticacao = [];
 
-  // connected sessions across all connections managers
-  this.sessions = {};
-  this.count = 0;
+  // Seções conectadas de todas gerências de conexão
+  this.secoes = {};
+  this.contador = 0;
 }
-util.inherits(ConnectionRouter, XRoute);
+util.inherits(RotaConexao, XRotas);
 
-ConnectionRouter.prototype.name = 'ConnectionRouter';
+RotaConexao.prototype.nome = 'RotaConexao';
 
-ConnectionRouter.prototype.match = function (stanza) {
-  var match = false;
+RotaConexao.prototype.seCorresponder = function (stanza) {
+  var seCorresponder = false;
 
   if (stanza.attrs && stanza.attrs.to) {
-    var toJid = new JID(stanza.attrs.to);
+    var paraJid = new JID(stanza.attrs.to);
 
-    // send to all local clients, check if jid is there
-    if (this.sessions.hasOwnProperty(toJid.bare().toString())) {
-      match = true;
+	// envia para todos clientes locais, verifica se o JID confere
+    if (this.secoes.hasOwnProperty(paraJid.bare().toString())) {
+      seCorresponder = true;
     }
   }
 
-  return match;
+  return seCorresponder;
 };
 
-ConnectionRouter.prototype.addAuthMethod = function (method) {
-  this.authMethods.push(method);
+RotaConexao.prototype.adcMetodoAutenticacao = function (metodo) {
+  this.metodosAutenticacao.push(metodo);
 };
 
-ConnectionRouter.prototype.findAuthMethod = function (method) {
-  var found = [];
-  for (var i = 0; i < this.authMethods.length; i++) {
-    if (this.authMethods[i].match(method)) {
-      found.push(this.authMethods[i]);
+RotaConexao.prototype.procurarMetodoAutenticacao = function (metodo) {
+  var encontrados = [];
+  for (var i = 0; i < this.metodosAutenticacao.length; i++) {
+    if (this.metodosAutenticacao[i].seCorresponder(metodo)) {
+      encontrados.push(this.metodosAutenticacao[i]);
     }
   }
-  return found;
+  return encontrados;
 };
 
 /**
- * additional step to verify user information
- * @param opts key values information about the user
+ * Passo adicional de verificação da informação do cliente
+ * @param informação de valores chave das opções do cliente
  */
-ConnectionRouter.prototype.verifyUser = function (opts) {
-  logger.debug('verify user');
+RotaConexao.prototype.verificarCliente = function (opcs) {
+  Registrador.debug('Verificando cliente');
 
-  for (var attr in opts) {
-    if (opts.hasOwnProperty(attr)) {
-      logger.debug(attr + ' -> ' + opts[attr]);
+  for (var atrb in opcs) {
+    if (opcs.hasOwnProperty(atrb)) {
+      Registrador.debug(atrb + ' -> ' + opcs[atrb]);
     }
   }
-
+/*
   var storage = this.storage;
 
   return new Promise(function(resolve, reject) {
     // store the name if we got him
-    if (opts.jid) {
+    if (opcs.jid) {
       logger.debug('update name of user');
       // we do not need to wait here, lets do this in background
       // find or create user and update name
@@ -87,13 +86,13 @@ ConnectionRouter.prototype.verifyUser = function (opts) {
       var usr = null;
       storage.sequelize.transaction().then(function (t) {
         transaction = t;
-        return storage.findOrCreateUser(opts.jid.toString(), {
+        return storage.findOrCreateUser(opcs.jid.toString(), {
           transaction: t
         })
       }).spread(function(user, created) { // jshint ignore:line
         usr = user;
-        if (opts.name) {
-          usr.name = opts.name;
+        if (opcs.name) {
+          usr.name = opcs.name;
         }
         return transaction.commit();
       }).then(function(){
@@ -108,74 +107,75 @@ ConnectionRouter.prototype.verifyUser = function (opts) {
       reject('parameter for authentication is missing')
     }
   })
+*/
 };
 
-ConnectionRouter.prototype.authenticate = function (opts, cb) {
-  var self = this;
+RotaConexao.prototype.autenticar = function (opcs, cd) {
+  var esteObjeto = this;
 
   try {
 
-    for (var attr in opts) {
-      if (opts.hasOwnProperty(attr)) {
-        logger.debug(attr + ' -> ' + opts[attr]);
+    for (var atrb in opcs) {
+      if (opcs.hasOwnProperty(atrb)) {
+        logger.debug(atrb + ' -> ' + opcs[atrb]);
       }
     }
 
     logger.debug('start authentication process');
-    var auth = this.findAuthMethod(opts.saslmech);
+    var auth = this.procurarMetodoAutenticacao(opcs.saslmech);
     if (auth.length > 0) {
-      auth[0].authenticate(opts).then(function (user) {
+      auth[0].authenticate(opcs).then(function (user) {
         logger.debug('xmpp user authenticated');
 
         // merge properties
         for (var property in user) {
           if (user.hasOwnProperty(property)) {
-            opts[property] = user[property];
+            opcs[property] = user[property];
           }
         }
 
-        self.verifyUser(opts).then(function () {
+        esteObjeto.verificarCliente(opcs).then(function () {
           logger.debug('user verified')
           // call callback
-          cb(null, opts);
+          cd(null, opcs);
         }).
         catch(function (err) {
           logger.error(err);
-          cb('user verification failed');
+          cd('user verification failed');
         });
 
       }).
       catch(function (err) {
         logger.error('xmpp user authentication failed' + err);
-        cb('xmpp could not authenticate user');
+        cd('xmpp could not authenticate user');
       });
 
     } else {
       // throw error
-      logger.error('cannot handle %s', opts.saslmech);
-      cb(new Error('user not found'));
+      logger.error('cannot handle %s', opcs.saslmech);
+      cd(new Error('user not found'));
     }
 
   } catch (err) {
     logger.error(err.stack);
-    cb(new Error('user not found'));
+    cd(new Error('user not found'));
   }
 };
 
-ConnectionRouter.prototype.register = function (opts, cb) {
+RotaConexao.prototype.register = function (opts, cd) {
   // is not implemented, but only relevant for server
   logger.debug('register');
 
   var err = new Error('not allowed');
   err.code = 123;
   err.type = 'abort';
-  cb(err);
+  cd(err);
 };
 
 /**
  * inbound communication
  */
-ConnectionRouter.prototype.handle = function (stanza) {
+RotaConexao.prototype.handle = function (stanza) {
 
   // verify we have a to adress
   if (!stanza.attrs.to) {
@@ -189,23 +189,23 @@ ConnectionRouter.prototype.handle = function (stanza) {
 /**
  * outbound communication
  */
-ConnectionRouter.prototype.send = function (stanza) {
+RotaConexao.prototype.send = function (stanza) {
   var sent = false
   try {
     // logger.debug('deliver:' + stanza.root().toString());
-    var self = this;
+    var esteObjeto = this;
 
     if (stanza.attrs && stanza.attrs.to) {
       var toJid = new JID(stanza.attrs.to);
 
       // send to all local clients, check if jid is there
-      if (self.sessions.hasOwnProperty(toJid.bare().toString())) {
+      if (esteObjeto.secoes.hasOwnProperty(toJid.bare().toString())) {
         // Now loop over all the sesssions and only send to the right jid(s)
         var resource;
-        for (resource in self.sessions[toJid.bare().toString()]) {
+        for (resource in esteObjeto.secoes[toJid.bare().toString()]) {
           if (toJid.bare().toString() === toJid.toString() || toJid.resource === resource) {
             logger.debug('send message to resource: ' + resource);
-            self.sessions[toJid.bare().toString()][resource].send(stanza);
+            esteObjeto.secoes[toJid.bare().toString()][resource].send(stanza);
             sent = true;
           }
         }
@@ -228,15 +228,15 @@ ConnectionRouter.prototype.send = function (stanza) {
 /**
  * Registers a route (jid client connection)
  */
-ConnectionRouter.prototype.registerRoute = function (jid, client) {
+RotaConexao.prototype.registerRoute = function (jid, client) {
   try {
     logger.debug('register jid ' + jid);
     // TODO check for conflicts
-    if (!this.sessions.hasOwnProperty(jid.bare().toString())) {
-      this.sessions[jid.bare().toString()] = {};
+    if (!this.secoes.hasOwnProperty(jid.bare().toString())) {
+      this.secoes[jid.bare().toString()] = {};
     }
 
-    this.sessions[jid.bare().toString()][jid.resource] = client;
+    this.secoes[jid.bare().toString()][jid.resource] = client;
   } catch (err) {
     logger.error(err.stack);
   }
@@ -246,12 +246,12 @@ ConnectionRouter.prototype.registerRoute = function (jid, client) {
 /**
  * Unregisters a route (jid client connection)
  */
-ConnectionRouter.prototype.unregisterRoute = function (jid) {
+RotaConexao.prototype.unregisterRoute = function (jid) {
   try {
     logger.debug('unregister jid ' + jid);
     if (jid && jid.bare()) {
-      if (this.sessions.hasOwnProperty(jid.bare().toString())) {
-        delete this.sessions[jid.bare().toString()][jid.resource];
+      if (this.secoes.hasOwnProperty(jid.bare().toString())) {
+        delete this.secoes[jid.bare().toString()][jid.resource];
       }
     }
   } catch (err) {
@@ -264,14 +264,14 @@ ConnectionRouter.prototype.unregisterRoute = function (jid) {
 /**
  * Returns the list of jids connected for a specific jid.
  */
-ConnectionRouter.prototype.connectedClientsForJid = function (jid) {
+RotaConexao.prototype.connectedClientsForJid = function (jid) {
   try {
     jid = new JID(jid);
-    if (!this.sessions.hasOwnProperty(jid.bare().toString())) {
+    if (!this.secoes.hasOwnProperty(jid.bare().toString())) {
       return [];
     } else {
       var jids = [];
-      var resources = this.sessions[jid.bare().toString()];
+      var resources = this.secoes[jid.bare().toString()];
       for (var resource in resources) {
         if (resources.hasOwnProperty(resource)) {
           jids.push(new JID(jid.bare().toString() + '/' + resource));
@@ -285,7 +285,7 @@ ConnectionRouter.prototype.connectedClientsForJid = function (jid) {
   }
 };
 
-ConnectionRouter.prototype.connect = function (jid, stream) {
+RotaConexao.prototype.connect = function (jid, stream) {
   try {
     if (jid) {
       this.registerRoute(jid, stream);
@@ -296,7 +296,7 @@ ConnectionRouter.prototype.connect = function (jid, stream) {
   }
 };
 
-ConnectionRouter.prototype.disconnect = function (jid, stream) {
+RotaConexao.prototype.disconnect = function (jid, stream) {
   try {
     this.unregisterRoute(jid, stream);
     this.emit('disconnect', jid);
@@ -305,7 +305,7 @@ ConnectionRouter.prototype.disconnect = function (jid, stream) {
   }
 };
 
-ConnectionRouter.prototype.verifyStanza = function (stream, stanza) {
+RotaConexao.prototype.verifyStanza = function (stream, stanza) {
   try {
     // verify xmpp stanza
     var error = XmppVerify.invalidfrom(stream, stanza);
@@ -327,23 +327,23 @@ ConnectionRouter.prototype.verifyStanza = function (stream, stanza) {
  * Takes a stream and registers event handler
  * @param   stream node-xmpp stream
  */
-ConnectionRouter.prototype.registerStream = function (stream) {
+RotaConexao.prototype.registerStream = function (stream) {
 
-  this.count++;
+  this.contador++;
 
-  logger.debug('register new stream' + this.count);
+  logger.debug('register new stream' + this.contador);
 
-  var self = this;
+  var esteObjeto = this;
 
   // Allows the developer to authenticate users against anything they
   // want.
-  stream.on('authenticate', function (opts, cb) {
-    self.authenticate(opts, cb);
+  stream.on('authenticate', function (opts, cd) {
+    esteObjeto.autenticar(opts, cd);
   });
 
   // Allows the developer to register the jid against anything they want
-  stream.on('register', function (opts, cb) {
-    self.register(opts, cb);
+  stream.on('register', function (opts, cd) {
+    esteObjeto.register(opts, cd);
   });
 
   // socket events from node-xmpp connection
@@ -356,58 +356,58 @@ ConnectionRouter.prototype.registerStream = function (stream) {
   stream.on('online', function () {
     logger.debug('ONLINE: ' + stream.jid.toString());
     // forward event to router
-    self.connect(stream.jid, stream);
+    esteObjeto.connect(stream.jid, stream);
   });
 
   stream.on('close', function () {
     // forward event to router
-    self.disconnect(stream.jid, stream);
+    esteObjeto.disconnect(stream.jid, stream);
   });
 
   stream.on('stanza', function (stanza) {
     logger.debug('incomming message: ' + stanza.toString());
-    self.verifyStanza(stream, stanza);
+    esteObjeto.verifyStanza(stream, stanza);
   });
 
   // base router events
   stream.on('connect', function () {
-    self.count--;
-    self.connect(stream.jid, stream);
+    esteObjeto.contador--;
+    esteObjeto.connect(stream.jid, stream);
   });
 
   stream.on('disconnect', function () {
-    self.disconnect(stream.jid, stream);
+    esteObjeto.disconnect(stream.jid, stream);
   });
 
 };
 
-ConnectionRouter.prototype.unregisterStream = function () {
+RotaConexao.prototype.unregisterStream = function () {
   // TODO implement
 };
 
 // add multiple connection manager
-ConnectionRouter.prototype.addConnectionManager = function (connMgr) {
+RotaConexao.prototype.addConnectionManager = function (connMgr) {
   logger.debug('load connection manager: ' + connMgr.name);
 
   // store connection manager
-  this.connectionManagers.push(connMgr);
+  this.gerenciaConexoes.push(connMgr);
 
   // attach to events from connection and forward them 
   // to the connection router
-  var self = this;
+  var esteObjeto = this;
   connMgr.on('connect', function (stream) {
-    self.registerStream(stream);
+    esteObjeto.registerStream(stream);
   });
 
 };
 
 // shutdown the connection manger
-ConnectionRouter.prototype.stopConnections = function () {
+RotaConexao.prototype.stopConnections = function () {
   logger.info('shutdown all connections');
 
-  for (var i = 0, l = this.connectionManagers.length; i < l; i++) {
-    this.connectionManagers[i].shutdown();
+  for (var i = 0, l = this.gerenciaConexoes.length; i < l; i++) {
+    this.gerenciaConexoes[i].shutdown();
   }
 };
 
-module.exports = ConnectionRouter;
+module.exports = RotaConexao;
