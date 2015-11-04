@@ -199,9 +199,9 @@ RotaConexao.prototype.enviar = function (stanza) {
     if (stanza.attrs && stanza.attrs.to) {
       var destinatarioJid = new JID(stanza.attrs.to);
 
-	  // Envia para todos clientes locais, também verifica se tem o JID.
+      // Envia para todos clientes locais, também verifica se tem o JID.
       if (esteObjeto.secoes.hasOwnProperty(destinatarioJid.bare().toString())) {
-		// Agora percorre todas as seções em laço e somente envia para o(s) JID(s) correto(s).
+        // Agora percorre todas as seções em laço e somente envia para o(s) JID(s) correto(s).
         var fonte;
         for (fonte in esteObjeto.secoes[destinatarioJid.bare().toString()]) {
           if (destinatarioJid.bare().toString() === destinatarioJid.toString() || destinatarioJid.resource === fonte) {
