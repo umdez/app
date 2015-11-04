@@ -4,8 +4,8 @@ var util = require('util');
 var XRotas = require('../nucleo/XRotas');
 var Promessa = require('bluebird');
 var JID = require('node-xmpp-core').JID;
-var VerificaXmpp = require('../nucleo/VerificaXmpp');
-var Registrador = require('../nucleo/Registrador')('rotasconexao');
+var VerificarXmpp = require('../nucleo/VerificarXmpp');
+var Registrador = require('../nucleo/Registrador')('rotaconexao');
 
 /**
  * Gerencia as conexões e roteia as solicitações para outras rotas
@@ -26,6 +26,7 @@ function RotaConexao(storage) {
   // Seções conectadas de todas gerências de conexão
   this.secoes = {};
   this.contador = 0;
+  
 }
 util.inherits(RotaConexao, XRotas);
 
@@ -37,7 +38,7 @@ RotaConexao.prototype.seCorresponder = function (stanza) {
   if (stanza.attrs && stanza.attrs.to) {
     var paraJid = new JID(stanza.attrs.to);
 
-	// envia para todos clientes locais, verifica se o JID confere
+    // envia para todos clientes locais, verifica se o JID confere
     if (this.secoes.hasOwnProperty(paraJid.bare().toString())) {
       seCorresponder = true;
     }
@@ -75,10 +76,10 @@ RotaConexao.prototype.verificarCliente = function (opcs) {
 /*
   var storage = this.storage;
 
-  return new Promise(function(resolve, reject) {
+  return new Promessa(function(resolve, reject) {
     // store the name if we got him
     if (opcs.jid) {
-      logger.debug('update name of user');
+      Registrador.debug('update name of user');
       // we do not need to wait here, lets do this in background
       // find or create user and update name
 
@@ -96,10 +97,10 @@ RotaConexao.prototype.verificarCliente = function (opcs) {
         }
         return transaction.commit();
       }).then(function(){
-        logger.debug(JSON.stringify(usr));
+        Registrador.debug(JSON.stringify(usr));
         resolve(usr);
       }).catch(function(err){
-        logger.error(err);
+        Registrador.error(err);
         transaction.rollback();
         reject(err);
       })
@@ -117,54 +118,54 @@ RotaConexao.prototype.autenticar = function (opcs, cd) {
 
     for (var atrb in opcs) {
       if (opcs.hasOwnProperty(atrb)) {
-        logger.debug(atrb + ' -> ' + opcs[atrb]);
+        Registrador.debug(atrb + ' -> ' + opcs[atrb]);
       }
     }
 
-    logger.debug('start authentication process');
-    var auth = this.procurarMetodoAutenticacao(opcs.saslmech);
-    if (auth.length > 0) {
-      auth[0].authenticate(opcs).then(function (user) {
-        logger.debug('xmpp user authenticated');
+    Registrador.debug('Inicia o processo de autenticação');
+    var autenticacao = this.procurarMetodoAutenticacao(opcs.saslmech);
+    if (autenticacao.length > 0) {
+      autenticacao[0].authenticate(opcs).then(function (cliente) { // Afazer: descobrir este método authenticate.
+        Registrador.debug('Clinte xmpp autenticado');
 
-        // merge properties
-        for (var property in user) {
-          if (user.hasOwnProperty(property)) {
-            opcs[property] = user[property];
+        // Unindo propriedades
+        for (var propriedade in cliente) {
+          if (cliente.hasOwnProperty(propriedade)) {
+            opcs[propriedade] = cliente[propriedade];
           }
         }
 
         esteObjeto.verificarCliente(opcs).then(function () {
-          logger.debug('user verified')
-          // call callback
+          Registrador.debug('Cliente verificado')
+          // Chamar depois
           cd(null, opcs);
         }).
         catch(function (err) {
-          logger.error(err);
+          Registrador.error(err);
           cd('user verification failed');
         });
 
       }).
       catch(function (err) {
-        logger.error('xmpp user authentication failed' + err);
+        Registrador.error('Autenticação do cliente xmpp falhou' + err);
         cd('xmpp could not authenticate user');
       });
 
     } else {
       // throw error
-      logger.error('cannot handle %s', opcs.saslmech);
+      Registrador.error('Não foi possivel manipular %s', opcs.saslmech);
       cd(new Error('user not found'));
     }
 
   } catch (err) {
-    logger.error(err.stack);
+    Registrador.error(err.stack);
     cd(new Error('user not found'));
   }
 };
 
-RotaConexao.prototype.register = function (opts, cd) {
-  // is not implemented, but only relevant for server
-  logger.debug('register');
+RotaConexao.prototype.registrar = function (opcs, cd) {
+  // Não está implementado, mas é relevante apenas para servidor.
+  Registrador.debug('registrar');
 
   var err = new Error('not allowed');
   err.code = 123;
@@ -173,240 +174,238 @@ RotaConexao.prototype.register = function (opts, cd) {
 };
 
 /**
- * inbound communication
+ * Comunicação de entrada
  */
-RotaConexao.prototype.handle = function (stanza) {
+RotaConexao.prototype.manipular = function (stanza) {
 
-  // verify we have a to adress
+  // Verifica se nós temos o endereço do remetente
   if (!stanza.attrs.to) {
     stanza.attrs.to = new JID(stanza.attrs.from).getDomain();
   }
 
-  logger.debug('emit stanza: ' + stanza.toString());
+  Registrador.debug('emitir evento stanza: ' + stanza.toString());
   this.emit('stanza', stanza);
 };
 
 /**
- * outbound communication
+ * Comunicação de saida
  */
-RotaConexao.prototype.send = function (stanza) {
-  var sent = false
+RotaConexao.prototype.enviar = function (stanza) {
+  var enviado = false
   try {
-    // logger.debug('deliver:' + stanza.root().toString());
+    // Registrador.debug('Entregar:' + stanza.root().toString());
     var esteObjeto = this;
 
     if (stanza.attrs && stanza.attrs.to) {
-      var toJid = new JID(stanza.attrs.to);
+      var destinatarioJid = new JID(stanza.attrs.to);
 
-      // send to all local clients, check if jid is there
-      if (esteObjeto.secoes.hasOwnProperty(toJid.bare().toString())) {
-        // Now loop over all the sesssions and only send to the right jid(s)
-        var resource;
-        for (resource in esteObjeto.secoes[toJid.bare().toString()]) {
-          if (toJid.bare().toString() === toJid.toString() || toJid.resource === resource) {
-            logger.debug('send message to resource: ' + resource);
-            esteObjeto.secoes[toJid.bare().toString()][resource].send(stanza);
-            sent = true;
+	  // Envia para todos clientes locais, também verifica se tem o JID.
+      if (esteObjeto.secoes.hasOwnProperty(destinatarioJid.bare().toString())) {
+		// Agora percorre todas as seções em laço e somente envia para o(s) JID(s) correto(s).
+        var fonte;
+        for (fonte in esteObjeto.secoes[destinatarioJid.bare().toString()]) {
+          if (destinatarioJid.bare().toString() === destinatarioJid.toString() || destinatarioJid.resource === fonte) {
+            Registrador.debug('enviando mensagem para a fonte: ' + fonte);
+            esteObjeto.secoes[destinatarioJid.bare().toString()][fonte].send(stanza);
+            enviado = true;
           }
         }
 
-        // we couldn't send the stanza
-        if (!sent) {
-          logger.error(stanza.root().toString() + ' could not be delivered');
+		// Não foi possível enviar a stanza.
+        if (!enviado) {
+          Registrador.error(stanza.root().toString() + ' Não pode ser entregue');
         }
       } else {
-        logger.warn('could not deliver: ' + stanza.toString());
+        Registrador.warn('Não pôde ser entregue a stanza: ' + stanza.toString());
       }
     }
   } catch (err) {
-    logger.error(err.stack);
+    Registrador.error(err.stack);
   }
 
   return sent;
 };
 
 /**
- * Registers a route (jid client connection)
+ * Registra uma rota (A conexão de um cliente JID)
  */
-RotaConexao.prototype.registerRoute = function (jid, client) {
+RotaConexao.prototype.registrarRota = function (jid, cliente) {
   try {
-    logger.debug('register jid ' + jid);
-    // TODO check for conflicts
+    Registrador.debug('Registrado cliente ' + jid);
+    // Afazer: Verificar por conflitos
     if (!this.secoes.hasOwnProperty(jid.bare().toString())) {
       this.secoes[jid.bare().toString()] = {};
     }
 
-    this.secoes[jid.bare().toString()][jid.resource] = client;
+    this.secoes[jid.bare().toString()][jid.resource] = cliente;
   } catch (err) {
-    logger.error(err.stack);
+    Registrador.error(err.stack);
   }
   return true;
 };
 
 /**
- * Unregisters a route (jid client connection)
+ * Desregistra uma rota (A conexão de cliente JID)
  */
-RotaConexao.prototype.unregisterRoute = function (jid) {
+RotaConexao.prototype.desregistrarRota = function (jid) {
   try {
-    logger.debug('unregister jid ' + jid);
+    Registrador.debug('desregistrar jid ' + jid);
     if (jid && jid.bare()) {
       if (this.secoes.hasOwnProperty(jid.bare().toString())) {
         delete this.secoes[jid.bare().toString()][jid.resource];
       }
     }
   } catch (err) {
-    logger.error(err.stack);
+    Registrador.error(err.stack);
   }
 
   return true;
 };
 
 /**
- * Returns the list of jids connected for a specific jid.
+ * Retorna a lista de JIDs conectados a um JID especifico.
  */
-RotaConexao.prototype.connectedClientsForJid = function (jid) {
+RotaConexao.prototype.clientesConectadosPorJid = function (jid) {
   try {
     jid = new JID(jid);
     if (!this.secoes.hasOwnProperty(jid.bare().toString())) {
       return [];
     } else {
       var jids = [];
-      var resources = this.secoes[jid.bare().toString()];
-      for (var resource in resources) {
-        if (resources.hasOwnProperty(resource)) {
-          jids.push(new JID(jid.bare().toString() + '/' + resource));
+      var fontes = this.secoes[jid.bare().toString()];
+      for (var fonte in fontes) {
+        if (fontes.hasOwnProperty(fonte)) {
+          jids.push(new JID(jid.bare().toString() + '/' + fonte));
         }
       }
       return jids;
     }
   } catch (err) {
-    logger.error(err.stack);
+    Registrador.error(err.stack);
     return [];
   }
 };
 
-RotaConexao.prototype.connect = function (jid, stream) {
+RotaConexao.prototype.conecta = function (jid, stream) {
   try {
     if (jid) {
-      this.registerRoute(jid, stream);
+      this.registrarRota(jid, stream);
       this.emit('connect', jid);
     }
   } catch (err) {
-    logger.error(err);
+    Registrador.error(err);
   }
 };
 
-RotaConexao.prototype.disconnect = function (jid, stream) {
+RotaConexao.prototype.desconecta = function (jid, stream) {
   try {
-    this.unregisterRoute(jid, stream);
+    this.desregistrarRota(jid, stream);
     this.emit('disconnect', jid);
   } catch (err) {
-    logger.error(err.stack);
+    Registrador.error(err.stack);
   }
 };
 
-RotaConexao.prototype.verifyStanza = function (stream, stanza) {
+RotaConexao.prototype.verificarStanza = function (stream, stanza) {
   try {
-    // verify xmpp stanza
-    var error = XmppVerify.invalidfrom(stream, stanza);
+    // Verificar xmpp stanza
+    var erro = VerificarXmpp.remetenteInvalido(stream, stanza);
 
-    if (error) {
-      logger.warn(error);
-      // stream.error(error);
+    if (erro) {
+      Registrador.warn(erro);
+      // cliente.error(error);
     }
 
-    // forward stanza to route
-    this.handle(stanza);
+    // Despacha stanza para rota
+    this.manipular(stanza);
 
   } catch (err) {
-    logger.error(err.stack);
+    Registrador.error(err.stack);
   }
 };
 
 /**
- * Takes a stream and registers event handler
+ * Pega um stream e registra manipulação para os eventos
  * @param   stream node-xmpp stream
  */
 RotaConexao.prototype.registerStream = function (stream) {
 
   this.contador++;
 
-  logger.debug('register new stream' + this.contador);
+  Registrador.debug('registrar novo stream ' + this.contador);
 
   var esteObjeto = this;
 
-  // Allows the developer to authenticate users against anything they
-  // want.
-  stream.on('authenticate', function (opts, cd) {
-    esteObjeto.autenticar(opts, cd);
+  // Permite ao desenvolvedor autenticar usuários da forma que quiser.
+  stream.on('authenticate', function (opcs, cd) {
+    esteObjeto.autenticar(opcs, cd);
   });
 
-  // Allows the developer to register the jid against anything they want
-  stream.on('register', function (opts, cd) {
-    esteObjeto.register(opts, cd);
+  // Permite ao desenvolvedor a registrar o JID da forma que quiser.
+  stream.on('register', function (opcs, cd) {
+    esteObjeto.registrar(opcs, cd);
   });
 
-  // socket events from node-xmpp connection
+  // Eventos de socket advinda de uma conexão node-xmpp
   stream.on('end', function () {
-    // connection is ended, then closed
-    // @see http://nodejs.org/api/net.html#net_event_end
-    logger.debug('client connection end');
+	// Conexão foi finalizada, e então fechada.
+    // @veja http://nodejs.org/api/net.html#net_event_end
+    Registrador.debug('Conexão do cliente fechada');
   });
 
   stream.on('online', function () {
-    logger.debug('ONLINE: ' + stream.jid.toString());
-    // forward event to router
-    esteObjeto.connect(stream.jid, stream);
+    Registrador.debug('ONLINE: ' + stream.jid.toString());
+    // despacha o evento para a rota
+    esteObjeto.conecta(stream.jid, stream);
   });
 
   stream.on('close', function () {
-    // forward event to router
-    esteObjeto.disconnect(stream.jid, stream);
+	// Despacha evento para a rota
+    esteObjeto.desconecta(stream.jid, stream);
   });
 
   stream.on('stanza', function (stanza) {
-    logger.debug('incomming message: ' + stanza.toString());
-    esteObjeto.verifyStanza(stream, stanza);
+    Registrador.debug('mensagem recebida : ' + stanza.toString());
+    esteObjeto.verificarStanza(stream, stanza);
   });
 
-  // base router events
+  // Eventos base da rota
   stream.on('connect', function () {
     esteObjeto.contador--;
-    esteObjeto.connect(stream.jid, stream);
+    esteObjeto.conecta(stream.jid, stream);
   });
 
   stream.on('disconnect', function () {
-    esteObjeto.disconnect(stream.jid, stream);
+    esteObjeto.desconecta(stream.jid, stream);
   });
 
 };
 
-RotaConexao.prototype.unregisterStream = function () {
-  // TODO implement
+RotaConexao.prototype.desregistraStream = function () {
+  // Afazer: Implementar este método.
 };
 
-// add multiple connection manager
-RotaConexao.prototype.addConnectionManager = function (connMgr) {
-  logger.debug('load connection manager: ' + connMgr.name);
+// Adiciona multiplas gerencias de conexões
+RotaConexao.prototype.adcGerenciaConexoes = function (gerConex) {
+  Registrador.debug('Carregado gerência de conexão: ' + gerConex.nome);
 
-  // store connection manager
-  this.gerenciaConexoes.push(connMgr);
+  // Guarda a gerencia de conexões
+  this.gerenciaConexoes.push(gerConex);
 
-  // attach to events from connection and forward them 
-  // to the connection router
+  // Anexao aos eventos da conexão e despacha eles para o gerente de rotas.
   var esteObjeto = this;
-  connMgr.on('connect', function (stream) {
-    esteObjeto.registerStream(stream);
+  gerConex.on('connect', function (stream) {
+    esteObjeto.registraStream(stream);
   });
 
 };
 
-// shutdown the connection manger
-RotaConexao.prototype.stopConnections = function () {
-  logger.info('shutdown all connections');
+// Encerra o gerente de conexões
+RotaConexao.prototype.pararConexões = function () {
+  Registrador.info('Encerradas todas as conexões');
 
   for (var i = 0, l = this.gerenciaConexoes.length; i < l; i++) {
-    this.gerenciaConexoes[i].shutdown();
+    this.gerenciaConexoes[i].encerrar();
   }
 };
 
