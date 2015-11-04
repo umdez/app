@@ -1,5 +1,7 @@
 'use strict';
 
 module.exports = {
-  // RoteadorConexao: require('./RoteadorConexao')
+  //ComponentRouter: require('./ComponentRouter'),
+  RotaConexao: require('./RotaConexao'),
+  //StarRouter: require('./StarRouter')
 };
