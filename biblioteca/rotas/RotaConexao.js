@@ -223,7 +223,7 @@ RotaConexao.prototype.enviar = function (stanza) {
     Registrador.error(err.stack);
   }
 
-  return sent;
+  return enviado;
 };
 
 /**
