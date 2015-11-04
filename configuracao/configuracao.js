@@ -1,42 +1,32 @@
 module.exports = {
   
-  // Dominio onde será escutado para conexões
-  domain: 'localhost',
-
   // Registrar eventos e atividades (erros, infos) principalmente dos clientes conectados
   logger: true,
-
-  //tls: {
-  //  keyPath: '/etc/xmpp-server/tls/localhost-key.pem',
-  //  certPath: '/etc/xmpp-server/tls/localhost-cert.pem'
-  //},
-
-  // Escutar com websocket
-  websocket: {
-    port: 5280
-  },
 
   // Carrega a gerencia de conexão
   "connection": [{
       "type": "tcp",
       "port": 5222,
-      "interface": "0.0.0.0"
+      "interface": "0.0.0.0",
+      "domain": "localhost"
     }, {
       "type": "bosh",
       "port": 5280,
       "path": "http-bind",
-      "interface": "0.0.0.0"
+      "interface": "0.0.0.0",
+      "domain": "localhost"
     }, {
       "type": "websocket",
       "port": 5281,
-      "interface": "0.0.0.0"
+      "interface": "0.0.0.0",
+      "domain": "localhost"
     }
   ],
 
   // Configura o mecanismo de autenticação
   "auth": [{
     "type": "simple",
-    "testusers": true,
+    "testusers": false,
     "users": [{
       "user": "felippe",
       "password": "felippe10"
