@@ -1,5 +1,6 @@
 module.exports = {
-  port: 5222,
+  
+  // Dominio onde será escutado para conexões
   domain: 'localhost',
 
   // Registrar eventos e atividades (erros, infos) principalmente dos clientes conectados
