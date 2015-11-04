@@ -211,7 +211,7 @@ RotaConexao.prototype.enviar = function (stanza) {
           }
         }
 
-		// Não foi possível enviar a stanza.
+        // Não foi possível enviar a stanza.
         if (!enviado) {
           Registrador.error(stanza.root().toString() + ' Não pode ser entregue');
         }
