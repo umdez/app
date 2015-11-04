@@ -1,12 +1,14 @@
 var xmpp = require('node-xmpp-server');
-//var path = require('path'); Obsoleto?
+var path = require('path'); // <umdez> Nao está sendo utilizado. remover?
 
 // Acessamos os arquivos base do nosso servidor.
 var baseBiblioteca = require('../indice');
 
 // Carrega todos os arquivos necessários
 var RegistradorEventos = require('../nucleo/RegistradorEventos'); // Bom notar que utilizamos bunyan ao invez do winston nos outros arquivos.
-var Registrador = require('../nucleo/Registrador')('base');
+var registrador = require('../nucleo/Registrador')('principal'); 
+var GerenciaConexao = require('./GerenciaConexao');
+var Autenticacao = require('../nucleo/Autenticacao');
 
 //var Router      = require('../modules/router');
 //var Offline     = require('../modules/offline');
@@ -24,14 +26,30 @@ var Registrador = require('../nucleo/Registrador')('base');
 
 exports.prosseguir = function(configuracao, pronto) {
 
-  // Inicia rota conexões
-  var rotaConexao = new baseBiblioteca.Rota.RotaConexao();
-   
   // Criamos o servidor.
-  var servidor = new xmpp.C2SServer(configuracao);
+  //var servidor = new xmpp.C2SServer(configuracao);
 
   // Adiciona o registro para os eventos do servidor e dos clientes de cada servidor.
-  RegistradorEventos.adcRegistroEventosPara(servidor, configuracao.logger);
+  //var registradorEventos = new RegistradorEventos(); 
+  //registradorEventos.adcRegistroEventosPara(servidor, configuracao.logger);
+  
+  var rotaConexao = new baseBiblioteca.Rota.RotaConexao(); // Inicia rota conexões
+  var gerenciaConexao = new GerenciaConexao();
+  var autenticacao = new Autenticacao(configuracao);
+  
+  registrador.debug('Carregando gerencia de conexão');
+  gerenciaConexao.carregar(rotaConexao, configuracao)
+  .then(function () {
+    // Carrega módulos de autenticação
+    registrador.debug('Iniciando autenticação');
+    return autenticacao.carregar(rotaConexao, configuracao);
+  })
+  .then(function () {
+    registrador.debug('Iniciou servidor xmpp com sucesso!');
+  })
+  .catch(function (err) {
+    registrador.error(err);
+  });
   
   // Configure the mods at the server level!
   //Router.configure(server, config.router); 
@@ -46,6 +64,7 @@ exports.prosseguir = function(configuracao, pronto) {
   //S2S.configure(server, config);
   //Ping.configure(server, config.ping);
 
+/*
   // Evento ao conectar. Quando um cliente conecta.
   servidor.on('connect', function(cliente) {
 
@@ -113,6 +132,7 @@ exports.prosseguir = function(configuracao, pronto) {
   servidor.on("disconnect", function(cliente) {
     console.log('Cliente desconectado do servidor');
   });
+*/
 
   // Esta é a função chamado quando o servidor estiver pronto e realizado. É util quando executado em um outro código.
   // Necessario ter certeza que este é o local correto para isso no futuro porque C2S e S2S talvez não estarão prontos.
