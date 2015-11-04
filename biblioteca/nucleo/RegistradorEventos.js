@@ -3,7 +3,7 @@
 var registrador = require('winston');
 
 function RegistradorEventos() {
-  
+  this.seLigar = true;
 }
 
 /* Se for ligado vai fazer o registro dos eventos para um dado servidor.
@@ -11,6 +11,10 @@ function RegistradorEventos() {
  * @param o determinado gerenciador de conexões em que iremos registrar os eventos
  */
 RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
+  
+  if (!this.seLigar) {
+    return;
+  }
   
   // Aqui faremos o registro para cada um dos eventos 
   // Aqui conseguiremos escutar os eventos em todos objetos ligados aquele gerente de conexão, incluindo as rotas, 
