@@ -401,7 +401,7 @@ RotaConexao.prototype.adcGerenciaConexoes = function (gerConex) {
 };
 
 // Encerra o gerente de conexões
-RotaConexao.prototype.pararConexões = function () {
+RotaConexao.prototype.pararConexoes = function () {
   Registrador.info('Encerradas todas as conexões');
 
   for (var i = 0, l = this.gerenciaConexoes.length; i < l; i++) {
