@@ -348,7 +348,7 @@ RotaConexao.prototype.registerStream = function (stream) {
 
   // Eventos de socket advinda de uma conexão node-xmpp
   stream.on('end', function () {
-	// Conexão foi finalizada, e então fechada.
+    // Conexão foi finalizada, e então fechada.
     // @veja http://nodejs.org/api/net.html#net_event_end
     Registrador.debug('Conexão do cliente fechada');
   });
@@ -360,7 +360,7 @@ RotaConexao.prototype.registerStream = function (stream) {
   });
 
   stream.on('close', function () {
-	// Despacha evento para a rota
+    // Despacha evento para a rota
     esteObjeto.desconecta(stream.jid, stream);
   });
 
