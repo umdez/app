@@ -34,6 +34,25 @@ module.exports = {
       "user": "vinicius",
       "password": "vinicius10"
     }]
-  }]
+  }],
+  
+  // storage for the data, radiowave supports armazenamento para os dados que o servidor suporta (MySQL)
+  "storage": {
+    "dialect": "mysql",
+    "user": "leo",
+    "password": "montes",
+    "database": "database",
+    "storage": "./database.sqlite"
+  },
+  
+  // configurações para a api e o cors
+  "api": {
+  "activate": true,
+  "port": 8080,
+  "cors": {
+    // não utilize * em uso final
+    "hosts": ["*"]
+  }
+}
   
 };
