@@ -33,7 +33,7 @@ XRotas.prototype.manipular = function (stanza) {}; // jshint ignore:line
  */
 XRotas.prototype.enviar = function (stanza) {
   registrador.debug(this.nome + ' envia stanza: ' + stanza.toString());
-  this.emit('enviar', stanza);
+  this.emit('send', stanza);
 };
 
 /**
