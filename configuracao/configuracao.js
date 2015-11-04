@@ -1,7 +1,4 @@
 module.exports = {
-  
-  // Registrar eventos e atividades (erros, infos) principalmente dos clientes conectados
-  logger: true,
 
   // Carrega a gerencia de conexão
   "connection": [{
