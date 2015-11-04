@@ -85,4 +85,4 @@ RegistradorEventos.prototype.info = function(mensagem) {
   }
 } 
 
-module.exports = new RegistradorEventos();
+module.exports = RegistradorEventos;
