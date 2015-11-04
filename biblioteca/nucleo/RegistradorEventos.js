@@ -6,83 +6,106 @@ function RegistradorEventos() {
   
 }
 
-// Obsoleto, deletar!
-RegistradorEventos.prototype.configurar = function(servidor, ligar) {
-  
-}
-
 /* Se for ligado vai fazer o registro dos eventos para um dado servidor.
  *
- * @param o determinado servidor em que iremos registrar os eventos
- * @param este é definido na configuração se for necessario ligar o registro para o servidor determinado 
+ * @param o determinado gerenciador de conexões em que iremos registrar os eventos
  */
-RegistradorEventos.prototype.adcRegistroEventosPara = function (servidor, seLigar) {
+RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
   
   // Aqui faremos o registro para cada um dos eventos 
-  // Aqui conseguiremos escutar os eventos em todos objetos ligados aquele servidor, incluindo as rotas, 
+  // Aqui conseguiremos escutar os eventos em todos objetos ligados aquele gerente de conexão, incluindo as rotas, 
   // gerenciamento de sessão, rotas S2S, as conexões, etc.
-  if(seLigar) {
 	  
-	// http://xmpp.org/extensions/xep-0160.html
-    var formatarRegistro = function(cliente, mensagem) {
-      //Preciso descobrir como acessar o remoteAddress nesta nova versão do node-xmpp-server
-      return [/*cliente.socket.remoteAddress,*/ cliente.streamId, mensagem].join(" "); 
-    }  
+  // http://xmpp.org/extensions/xep-0160.html
+  var formatarRegistro = function(stream, mensagem) {
+    return [ stream.streamId, mensagem].join(' '); 
+  }  
 	  
-    servidor.on("connect", function(cliente) {
-      registrador.debug(formatarRegistro(cliente, "connected"));
+  GerenConex.on('connect', function(stream) {
+    registrador.debug(formatarRegistro(stream, 'Conectado'));
 
-      cliente.on('session-started', function() {
-        registrador.info(formatarRegistro(cliente, stanza.toString()));
-      });
-
-      cliente.on('auth-success', function(jid) {
-        registrador.info(formatarRegistro(cliente, "auth-success " + jid));
-      });
-
-      cliente.on('online', function() {
-        registrador.info(formatarRegistro(cliente, "online " + cliente.jid));
-      });
-
-      cliente.on('auth-failure', function(jid) {
-        registrador.info(formatarRegistro(cliente, "auth-failure " + jid));
-      });
-
-      cliente.on('registration-success', function(jid) {
-        registrador.info(formatarRegistro(cliente, "registration-success " + jid));
-      });
-
-      cliente.on('registration-failure', function(jid) {
-        registrador.info(formatarRegistro(cliente, "registration-failure " + jid));
-      });
+    stream.on('session-started', function() {
+      registrador.info(formatarRegistro(stream, stanza.toString()));
     });
 
-    servidor.on("s2sReady", function(s2s) {
-      // console.log("S2S ready");
-      // s2s.on("newStream", function(stream) {
-      // console.log("New Stream");
-      // });
+    stream.on('auth-success', function(jid) {
+      registrador.info(formatarRegistro(stream, 'auth-success ' + jid));
     });
 
-    servidor.on("c2sRoutersReady", function(router) {
-      // console.log("Router ready")
-    })
-  }
+    stream.on('online', function() {
+      registrador.info(formatarRegistro(stream, 'online ' + stream.jid));
+    });
 
+    stream.on('auth-failure', function(jid) {
+      registrador.info(formatarRegistro(stream, 'auth-failure ' + jid));
+    });
+
+    stream.on('registration-success', function(jid) {
+      registrador.info(formatarRegistro(stream, 'registration-success ' + jid));
+    });
+
+    stream.on('registration-failure', function(jid) {
+      registrador.info(formatarRegistro(stream, 'registration-failure ' + jid));
+    });
+	
+	 // Evento disparado quando cliente realizar conexão
+    stream.on('connect', function () {
+      
+    });
+	
+	// Evento disparado quando usuário realiza autenticação.
+    stream.on('authenticate', function(opcs, chamarDepois) {
+    
+    });
+	
+	// Evento disparado quando o cliente requisita registro para determinado JID
+    stream.on('register', function(opcs, chamarDepois) {
+
+    });
+	
+	// Evento disparado quando usuário desconecta do servidor
+    stream.on('disconnect', function () {
+      console.log('Cliente desconectado');
+    });
+
+    // Evento disparado quando conexão do cliente for finalizada
+    stream.on('end', function () {
+      // A conexão é finalizada e então fechada.
+      // @veja http://nodejs.org/api/net.html#net_event_end
+      
+    });
+
+    // Evento disparado quando cliente está online.
+    stream.on('online', function () {
+      
+    });
+
+    // Evento disparado quando a conexão do cliente foi fechada
+    stream.on('close', function () {
+      
+    });
+
+    // Evento disparado quando chega uma mensagem enviada pelo cliente remetente
+    stream.on('stanza', function (stanza) {
+      
+    });
+  });
+
+  GerenConex.on('s2sReady', function(s2s) {
+    // console.log("S2S ready");
+    // s2s.on("newStream", function(stream) {
+    // console.log("New Stream");
+    // });
+  });
+
+  GerenConex.on('c2sRoutersReady', function(router) {
+    // console.log("Router ready")
+  })
+
+  // Evento ao desconectar, quando um servidor desconecta.
+  GerenConex.on('disconnect', function() {
+    //console.log('Servidor desconectado');
+  });
 };
-
-RegistradorEventos.prototype.debug = function(mensagem) {
-  // Obsoleto, deletar!
-  if (this.seLigado) {
-    registrador.debug(mensagem);  
-  }
-} 
-
-RegistradorEventos.prototype.info = function(mensagem) {
-  // Obsoleto, deletar!
-  if (this.seLigado) {
-    registrador.info(mensagem);  
-  }
-} 
 
 module.exports = RegistradorEventos;

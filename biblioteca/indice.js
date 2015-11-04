@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = {
-  Roteador: require('./rotas/indice')
+  Rota: require('./rotas/indice'),
+  Autenticacao: require('./autenticacao/indice')
 };

@@ -3,7 +3,7 @@
 var pasta = require('path');
 var configuracao = require('jsconfig');
 var pastaConfiguracaoPadrao = pasta.join(__dirname, "/configuracao/configuracao.js");
-var Registrador = require('./biblioteca/nucleo/Registrador')('iniciar');
+var registrador = require('./biblioteca/nucleo/Registrador')('iniciar');
 
 configuracao.defaults(pastaConfiguracaoPadrao);
 
@@ -34,14 +34,8 @@ configuracao.load(function (args, opcs) {
 
   // Chamamos o arquivo principal, ele vai executar os outros.
   var servidor = require('./biblioteca/iniciador/principal');
-  servidor.prosseguir(configuracao, function(etapa) {
-
-    switch(etapa) {
-      case 'websocket_pronto':
-        // Servidor websocket pronto!
-		Registrador.debug('Servidor websocket pronto!');
-      break;
-    }
+  servidor.prosseguir(configuracao, function() {
+    registrador.debug('Iniciou servidor xmpp com sucesso!');
   });
   
 });

@@ -45,97 +45,57 @@ GerenciaConexao.prototype.tcp = function (dominio, chaves, configuracao) {
     'tls': tls
   });
 
+  cs2.nome = 'tcp + tls';
   return cs2;
 };
 
-GerenciaConexao.prototype.bosh = function (dominio, chaves, configuracao, multiPortas, subPasta) { // jshint ignore:line
-  var boshSettings = null;
-  var multiportActive = false;
-  if (multiPortas && ((configuracao.port === multiPortas.port) || (!configuracao.port))) {
-    boshSettings = {
-      autostart: false
-    };
-    registrador.debug('use multiport for bosh');
-    multiportActive = true;
-  } else if (configuracao.port) {
-    boshSettings = {
-      'port': configuracao.port
+GerenciaConexao.prototype.bosh = function (dominio, chaves, configuracao) { // jshint ignore:line
+  var configuracoesBosh = null;
+  
+  if (configuracao.port) {
+    configuracoesBosh = {
+      'port': configuracao.port,
+	  'domain': dominio
     };
   } else {
-    registrador.error('could not determine a port for socketio');
+    registrador.error('Não foi possivel determinar a porta para o servidor BOSH');
   }
 
-  // BOSH Server
-  var bosh = new xmpp.BOSHServer(boshSettings);
+  // Servidor BOSH 
+  var bosh = new xmpp.BOSHServer(configuracoesBosh);
 
-  if (multiportActive) {
-    var app = multiport.app;
-
-    // start bosh service
-    app.post('/' + configuracao.path, function (req, res) {
-      bosh.bosh.handleHTTP(req, res);
-    });
-
-    app.post('/' + configuracao.path + '/*', function (req, res) {
-      bosh.bosh.handleHTTP(req, res);
-    });
-  }
-
+  bosh.nome = 'bosh';
   return bosh;
 };
 
 GerenciaConexao.prototype.websocket = function (dominio, chaves, configuracao) {
-  // Websocket Server
+  // Servidor Websocket
   var ws = new xmpp.WebSocketServer({
     'port': configuracao.port,
     'domain': dominio,
     'autostart': false
   });
+  
+  ws.nome = 'websocket';
   return ws;
 };
 
-/* <umdez> Remover isto?
-GerenciaConexao.prototype.engineio = function (dominio, chaves, configuracao, multiPortas, subPasta) {
-  // Engine IO Server
-  var eioSetttings = {
-    'domain': dominio,
-    'autostart': false,
-    'subpath': subPasta
-  };
-
-  if (multiPortas && ((configuracao.port === multiPortas.port) || (!configuracao.port))) {
-    eioSetttings.server = multiPortas.server;
-    registrador.debug('use multiport for engine.io');
-  } else if (configuracao.port) {
-    eioSetttings.port = configuracao.port;
-  } else {
-    registrador.error('could not determine a port for engine.io');
-  }
-
-  // Engine.io Server
-  var eio = new xmpp.EioServer(eioSetttings);
-
-  return eio;
-};
-*/
-
-GerenciaConexao.prototype.socketio = function (dominio, chaves, configuracao, multiPortas) {
+GerenciaConexao.prototype.socketio = function (dominio, chaves, configuracao) {
   var sioSettings = {
     'domain': dominio,
     'autostart': false
   };
 
-  if (multiPortas && ((configuracao.port === multiPortas.port) || (!configuracao.port))) {
-    sioSettings.server = multiPortas.server;
-    registrador.debug('use multiport for socket.io');
-  } else if (configuracao.port) {
+  if (configuracao.port) {
     sioSettings.port = configuracao.port;
   } else {
-    registrador.error('could not determine a port for socket.io');
+    registrador.error('Não foi possível determinar uma porta para o servidor socketio');
   }
 
-  // Socket.io Server
+  // Servidor Socket.io
   var sio = new xmpp.SioServer(sioSettings);
+  sio.nome = 'socketio';
+  
   return sio;
 };
 
@@ -144,12 +104,10 @@ GerenciaConexao.prototype.carregar = function (rotaConexao, configuracao) {
   return new Promessa(function (deliberar, recusar) {
 
     var dominio = configuracao.dominio;
-    var subPasta = configuracao.subpath || '';
-	
+    
 	// Carrega configuração para a gerencia de conexão
     var gerConConfiguracao = configuracao.connection;
-    var multiPortas = configuracao.multiport; // <umdez> Mas o que realmente multiplas portas significa?
-
+    
     if (gerConConfiguracao && gerConConfiguracao.length > 0) {
 
       esteObjeto.carregaCertificado().then(function (chaves) {
@@ -158,7 +116,7 @@ GerenciaConexao.prototype.carregar = function (rotaConexao, configuracao) {
         gerConConfiguracao.forEach(function (item) {
 
           if (esteObjeto[item.type]) {
-            var gerCon = esteObjeto[item.type](dominio, chaves, item, multiPortas, subPasta);
+            var gerCon = esteObjeto[item.type](dominio, chaves, item);
             if (gerCon) {
               gerCon.registerSaslMechanism(xmpp.auth.Plain);
               gerCon.registerSaslMechanism(xmpp.auth.XOAuth2);
