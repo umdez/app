@@ -80,31 +80,10 @@ GerenciaConexao.prototype.websocket = function (dominio, chaves, configuracao) {
   return ws;
 };
 
-GerenciaConexao.prototype.socketio = function (dominio, chaves, configuracao) {
-  var sioSettings = {
-    'domain': dominio,
-    'autostart': false
-  };
-
-  if (configuracao.port) {
-    sioSettings.port = configuracao.port;
-  } else {
-    registrador.error('Não foi possível determinar uma porta para o servidor socketio');
-  }
-
-  // Servidor Socket.io
-  var sio = new xmpp.SioServer(sioSettings);
-  sio.nome = 'socketio';
-  
-  return sio;
-};
-
 GerenciaConexao.prototype.carregar = function (rotaConexao, configuracao) {
   var esteObjeto = this;
   return new Promessa(function (deliberar, recusar) {
 
-    var dominio = configuracao.dominio;
-    
 	// Carrega configuração para a gerencia de conexão
     var gerConConfiguracao = configuracao.connection;
     
@@ -116,7 +95,7 @@ GerenciaConexao.prototype.carregar = function (rotaConexao, configuracao) {
         gerConConfiguracao.forEach(function (item) {
 
           if (esteObjeto[item.type]) {
-            var gerCon = esteObjeto[item.type](dominio, chaves, item);
+            var gerCon = esteObjeto[item.type](item.domain, chaves, item);
             if (gerCon) {
               gerCon.registerSaslMechanism(xmpp.auth.Plain);
               gerCon.registerSaslMechanism(xmpp.auth.XOAuth2);
