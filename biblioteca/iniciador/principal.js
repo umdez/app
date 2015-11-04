@@ -1,10 +1,13 @@
 var xmpp = require('node-xmpp-server');
+//var path = require('path'); Obsoleto?
 
 // Acessamos os arquivos base do nosso servidor.
 var baseBiblioteca = require('../indice');
 
 // Carrega todos os arquivos necessários
 var RegistradorEventos = require('../nucleo/RegistradorEventos'); // Bom notar que utilizamos bunyan ao invez do winston nos outros arquivos.
+var Registrador = require('../nucleo/Registrador')('base');
+
 //var Router      = require('../modules/router');
 //var Offline     = require('../modules/offline');
 //var Version     = require('../modules/version'); 
@@ -21,6 +24,9 @@ var RegistradorEventos = require('../nucleo/RegistradorEventos'); // Bom notar q
 
 exports.prosseguir = function(configuracao, pronto) {
 
+  // Inicia rota conexões
+  var rotaConexao = new baseBiblioteca.Rota.RotaConexao();
+   
   // Criamos o servidor.
   var servidor = new xmpp.C2SServer(configuracao);
 
