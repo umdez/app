@@ -34,6 +34,10 @@ module.exports = {
       "user": "vinicius",
       "password": "vinicius10"
     }]
+  },
+  {
+    "type": "oauth2",
+    "server": "localhost"
   }],
   
   // storage for the data, radiowave supports armazenamento para os dados que o servidor suporta (MySQL)
