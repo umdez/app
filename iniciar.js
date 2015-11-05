@@ -14,11 +14,11 @@ configuracao.set('env', {
 });
 
 configuracao.cli({
-  domain: ['domain', ['d', "dominio do servidor xmpp",  'host']],
-  port:   ['port',   ['p', "porta do servidor xmpp",  'number']],
+  connection: ['connection', [false, "Não escutar conexões e não adicionar usuários de teste"]],
+  auth: ['auth', [false, "Não adicionar métodos de autenticação"]],
   configuracao: ['c', "pasta para carregar arquivo de configuracao", 'path', pastaConfiguracaoPadrao],
-  logger: ['logger', [false, "Registra eventos dos clientes em stdout"]],
-  websocket: ['websocket', [false, "Não escutar conexões websocket"]],
+  storage: ['storage', [false, "Não utilizar armazenamento"]],
+  api: ['api', [false, "Não oferecer serviço de api"]]
 });
 
 configuracao.load(function (args, opcs) {
