@@ -91,7 +91,7 @@ describe('Conecta o nosso cliente', function(){
 	 
     });
 	
-    it('deveria disparar um erro em caso de falha na conexão (Usuario ou senha errados)', function(pronto){
+    it('deveria disparar um erro em caso de falha no código', function(pronto){
 	  
 	  var quantClientesConect = 1;
 	  var clts = [];
@@ -108,9 +108,7 @@ describe('Conecta o nosso cliente', function(){
               
             //Quando todos os clientes da configuração estiverem conectados
             if (quantClientesConect === quantClientes) {
-              console.log('okokOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOKOK  ' + quantClientesConect);
 			  throw function() {};
-			  
             }
 
           });
