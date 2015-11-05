@@ -1,6 +1,6 @@
 'use strict';
 
-var registrador = require('winston');
+var registrador = require('./Registrador')('registradoreventos');
 
 function RegistradorEventos() {
   this.seLigar = true; // <umdez> Deveria haver uma forma de pegar este valor no arquivo de configurações.
@@ -28,70 +28,50 @@ RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
   GerenConex.on('connect', function(stream) {
     registrador.debug(formatarRegistro(stream, 'Conectado'));
 
-    stream.on('session-started', function() {
-      registrador.info(formatarRegistro(stream, stanza.toString()));
-    });
-
-    stream.on('auth-success', function(jid) {
-      registrador.info(formatarRegistro(stream, 'auth-success ' + jid));
-    });
-
     stream.on('online', function() {
-      registrador.info(formatarRegistro(stream, 'online ' + stream.jid));
+      registrador.debug(formatarRegistro(stream, 'online ' + stream.jid));
     });
 
-    stream.on('auth-failure', function(jid) {
-      registrador.info(formatarRegistro(stream, 'auth-failure ' + jid));
-    });
-
-    stream.on('registration-success', function(jid) {
-      registrador.info(formatarRegistro(stream, 'registration-success ' + jid));
-    });
-
-    stream.on('registration-failure', function(jid) {
-      registrador.info(formatarRegistro(stream, 'registration-failure ' + jid));
-    });
-	
-	 // Evento disparado quando cliente realizar conexão
+	 // Evento disparado quando stream realizar conexão
     stream.on('connect', function () {
-      
+      registrador.debug(formatarRegistro(stream, 'online ' + stream.jid) ); 
     });
 	
-	// Evento disparado quando usuário realiza autenticação.
+	// Evento disparado quando stream realiza autenticação.
     stream.on('authenticate', function(opcs, chamarDepois) {
-    
+      registrador.debug('Autenticação do stream.');
     });
 	
-	// Evento disparado quando o cliente requisita registro para determinado JID
+	// Evento disparado quando o stream requisita registro para determinado JID
     stream.on('register', function(opcs, chamarDepois) {
-
+      registrador.debug('Registro requisitado pelo stream.');
     });
 	
-	// Evento disparado quando usuário desconecta do servidor
+	// Evento disparado quando stream desconecta do servidor
     stream.on('disconnect', function () {
-      console.log('Cliente desconectado');
+      console.log('Stream desconectado');
     });
 
-    // Evento disparado quando conexão do cliente for finalizada
+    // Evento disparado quando conexão do stream for finalizada
     stream.on('end', function () {
       // A conexão é finalizada e então fechada.
       // @veja http://nodejs.org/api/net.html#net_event_end
-      
+      registrador.debug('Conexão do stream fechada');
     });
 
-    // Evento disparado quando cliente está online.
+    // Evento disparado quando stream está online.
     stream.on('online', function () {
-      
+      registrador.debug('Stream online: ' + stream.jid.toString());
     });
 
-    // Evento disparado quando a conexão do cliente foi fechada
+    // Evento disparado quando a conexão do stream foi fechada
     stream.on('close', function () {
-      
+      registrador.debug('Stream fechou conexão: ' + stream.jid.toString());
     });
 
-    // Evento disparado quando chega uma mensagem enviada pelo cliente remetente
+    // Evento disparado quando chega uma mensagem enviada pelo stream remetente
     stream.on('stanza', function (stanza) {
-      
+      registrador.debug('mensagem recebida : ' + stanza.toString());
     });
   });
 
@@ -100,15 +80,17 @@ RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
     // s2s.on("newStream", function(stream) {
     // console.log("New Stream");
     // });
+	// <umdez> evento obsoleto?
   });
 
   GerenConex.on('c2sRoutersReady', function(router) {
-    // console.log("Router ready")
+    // <umdez> Evento Obsoleto?
   })
 
-  // Evento ao desconectar, quando um servidor desconecta.
+  // Evento ao desconectar, quando um gerente de conexão desconecta.
   GerenConex.on('disconnect', function() {
-    //console.log('Servidor desconectado');
+    // <umdez> Este evento está obsoleto?
+	registrador.debug('Gerente de conexão desconectado');
   });
 };
 
