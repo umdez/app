@@ -2,16 +2,18 @@
 
 /**
 * Este teste tentará conectar um cliente ao servidor xmpp utilizando método simples.
+* Observer que utilizamos o arquivo de configuração onde usuários de teste são adicionados.
 **/
 
 var xmppCliente = require('node-xmpp-client');
+
+// Aqui iremos pegar os usuários
 var configuracao = require('../../configuracao/configuracao.js');
 var _ = require('underscore');
 
 // Chamamos o arquivo principal, ele vai iniciar o servidor.
 var servidor = require('../../biblioteca/iniciador/principal');
 
-// Esperamos este tempo para prosseguir com a conexão.
 var quantClientes = 0;
 var clientes = [];
 
@@ -20,15 +22,15 @@ describe('Conecta o nosso cliente', function(){
     before(function(avancar) {
       servidor.prosseguir(configuracao, function() {
         console.log('Iniciou servidor xmpp com sucesso!');
-		avancar();
+        avancar();
       });
     });
     
-	
-	beforeEach(function(avancar){
-		
+
+    beforeEach(function(avancar){
+
       if (configuracao && configuracao.auth && configuracao.auth.length >= 1) {
-		var quantAutenticacoes = configuracao.auth.length;
+        var quantAutenticacoes = configuracao.auth.length;
 
         var pronto = _.after(configuracao.auth.length, function() {
             avancar();
@@ -36,7 +38,7 @@ describe('Conecta o nosso cliente', function(){
         _.each(configuracao.auth, function(autenticacao) {
           // Percorremos as autenticações disponíveis
           quantAutenticacoes--;
-		  
+  
           if (autenticacao.users) {
             // Percorre lista de usuários
             autenticacao.users.forEach(function (usuario) {
@@ -47,16 +49,16 @@ describe('Conecta o nosso cliente', function(){
 
               // cada um dos usuários possuem uma configuração.
               clientes[usuario.user] = confConexaoClient;
-			
-			  quantClientes++;
-            });  
-		  } else {
-            console.log('Não possui usuarios para esta autenticação.');	
-		  } 
 
-		  if (quantAutenticacoes <= 1) {
+              quantClientes++;
+            });  
+          } else {
+            console.log('Não possui usuarios para esta autenticação.');	
+          } 
+
+          if (quantAutenticacoes <= 1) {
             pronto(); 		
-		  }
+          }
         });
 
       } else {
@@ -64,19 +66,20 @@ describe('Conecta o nosso cliente', function(){
         process.exit(1);
       }
     });
-	
+
     it('Deve conectar fácil se usuário e senha estivere corretos', function(pronto){
   
       var quantClientesConect = 1;
-	  var clts = [];
-	  var nomeUsuario;
+      var clts = [];
+      var nomeUsuario;
 
       this.timeout(10000); // 10 segundos de espera para terminar.
-	  
+  
       for (nomeUsuario in clientes){
         if (clientes.hasOwnProperty(nomeUsuario)) {
+          // cada cliente é conectado
           clts[nomeUsuario] = new xmppCliente(clientes[nomeUsuario]);
-		  
+  
           clts[nomeUsuario].on('online', function () {
             quantClientesConect++;
               
@@ -87,40 +90,41 @@ describe('Conecta o nosso cliente', function(){
 
           });
         }
-	  }
-	 
+       }
+ 
     });
 	
+	// Este teste não está funcionando ainda.
     it('deveria disparar um erro em caso de falha no código', function(pronto){
-	  
-	  var quantClientesConect = 1;
-	  var clts = [];
-	  var nomeUsuario;
+  
+      var quantClientesConect = 1;
+      var clts = [];
+      var nomeUsuario;
 
       this.timeout(10000); // 10 segundos de espera para terminar.
 	  
       for (nomeUsuario in clientes){
         if (clientes.hasOwnProperty(nomeUsuario)) {
           clts[nomeUsuario] = new xmppCliente(clientes[nomeUsuario]);
-		  
+  
           clts[nomeUsuario].on('online', function () {
             quantClientesConect++;
               
             //Quando todos os clientes da configuração estiverem conectados
             if (quantClientesConect === quantClientes) {
-			  throw function() {};
+              throw function() {};
             }
 
           });
-		  
-		  clts[nomeUsuario].on('error', function(err) {
+	  
+          clts[nomeUsuario].on('error', function(err) {
               //if(err === "XMPP authentication failure") {
               pronto();
               //}
           });
         }
-	  }
-	 
+      }
+ 
     });
     
 });
