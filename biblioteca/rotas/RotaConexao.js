@@ -6,6 +6,7 @@ var Promessa = require('bluebird');
 var JID = require('node-xmpp-core').JID;
 var VerificarXmpp = require('../nucleo/VerificarXmpp');
 var registrador = require('../nucleo/Registrador')('rotaconexao');
+var RegistradorEventos = require('../nucleo/RegistradorEventos'); // Bom notar que utilizamos também bunyan.
 
 /**
  * Gerencia as conexões e roteia as solicitações para outras rotas
@@ -26,6 +27,9 @@ function RotaConexao(storage) {
   // Seções conectadas de todas gerências de conexão
   this.secoes = {};
   this.contador = 0;
+  
+  // Vamos registrar aqueles eventos relacionados ao stream
+  this.registradorEventos = new RegistradorEventos();
   
 }
 util.inherits(RotaConexao, XRotas);
@@ -348,7 +352,7 @@ RotaConexao.prototype.registraStream = function (stream) {
     esteObjeto.autenticar(opcs, cd);
   });
 
-  // Permite ao desenvolvedor a registrar o JID da forma que quiser.
+  // Permite ao desenvolvedor aceitar e registrar o JID da forma que quiser.
   stream.on('register', function (opcs, cd) {
     esteObjeto.registrar(opcs, cd);
   });
@@ -394,7 +398,7 @@ RotaConexao.prototype.desregistraStream = function () {
 
 // Adiciona multiplas gerencias de conexões
 RotaConexao.prototype.adcGerenciaConexao = function (gerConex) {
-  registrador.debug('Carregado gerência de conexão: ' + gerConex.name);
+  registrador.debug('Carregado gerência de conexão: ' + gerConex.nome);
 
   // Guarda a gerencia de conexões
   this.gerenciaConexao.push(gerConex);
@@ -404,7 +408,10 @@ RotaConexao.prototype.adcGerenciaConexao = function (gerConex) {
   gerConex.on('connect', function (stream) {
     esteObjeto.registraStream(stream);
   });
-
+  
+  // Adiciona o registro de eventos para este gerente de conexões.
+  this.registradorEventos.adcRegistroEventosPara(gerConex);
+  
 };
 
 // Encerra o gerente de conexões
@@ -412,7 +419,7 @@ RotaConexao.prototype.pararConexoes = function () {
   registrador.info('Encerradas todas as conexões');
 
   for (var i = 0, l = this.gerenciaConexao.length; i < l; i++) {
-    this.gerenciaConexao[i].encerrar();
+    this.gerenciaConexao[i].shutdown();
   }
 };
 
