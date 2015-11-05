@@ -9,6 +9,7 @@ var baseBiblioteca = require('../indice');
 var registrador = require('../nucleo/Registrador')('principal'); 
 var GerenciaConexao = require('./GerenciaConexao');
 var Autenticacao = require('../nucleo/Autenticacao');
+//var Armazenamento = require('./Armazenamento');
 
 exports.prosseguir = function(configuracao, pronto) {
   
@@ -24,8 +25,8 @@ exports.prosseguir = function(configuracao, pronto) {
     return autenticacao.carregar(rotaConexao, configuracao);
   })
   .then(function () {
-	// parece que tudo ocorreu bem
-	pronto();
+    // parece que tudo ocorreu bem
+    pronto();
   })
   .catch(function (err) {
     registrador.error(err);

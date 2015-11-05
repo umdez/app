@@ -3,7 +3,7 @@
 var registrador = require('winston');
 
 function RegistradorEventos() {
-  this.seLigar = true;
+  this.seLigar = true; // <umdez> Deveria haver uma forma de pegar este valor no arquivo de configurações.
 }
 
 /* Se for ligado vai fazer o registro dos eventos para um dado servidor.

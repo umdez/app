@@ -4,7 +4,7 @@ var util = require('util');
 var Autenticador = require('./Autenticador');
 var Promessa = require('bluebird');
 var JID = require('node-xmpp-core').JID;
-var superagent = require('superagent'),
+var superagent = require('superagent');
 var registrador = require('../nucleo/Registrador')('autenticadoroauth2');
 
 /**
