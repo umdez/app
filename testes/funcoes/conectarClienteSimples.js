@@ -17,7 +17,7 @@ var servidor = require('../../biblioteca/iniciador/principal');
 var quantClientes = 0;
 var clientes = [];
 
-describe('Conecta o nosso cliente', function(){
+describe('Inicia servidor e conecta o nosso cliente', function(){
     
     before(function(avancar) {
       servidor.prosseguir(configuracao, function() {
@@ -116,7 +116,7 @@ describe('Conecta o nosso cliente', function(){
             }
 
           });
-	  
+
           clts[nomeUsuario].on('error', function(err) {
               //if(err === "XMPP authentication failure") {
               pronto();
