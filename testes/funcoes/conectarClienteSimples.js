@@ -1,7 +1,9 @@
 'use strict'
 
 /**
-* Este teste tentará conectar um cliente ao servidor xmpp utilizando método simples.
+* O primeiro teste tentará conectar um cliente ao servidor xmpp utilizando método simples.
+* O segundo tenta testar a autenticação que o servidor oferece, sendo que é esperado
+* um erro em caso se senha inválida.
 * Observer que utilizamos o arquivo de configuração onde usuários de teste são adicionados.
 **/
 
@@ -18,7 +20,7 @@ var quantClientes = 0;
 var clientes = [];
 
 // Lembre-se que ser você informou na configuração o testusers, Vão ser adcionados 10mil usuários.
-// Isso faz com que tenhamos que adicionar um timeout de 10 segundos para que o teste dê certo.
+// Isso faz com que tenhamos que adicionar um timeout de 30 segundos para que o teste dê certo.
 var seUsuariosTeste = false;
 
 describe('Inicia servidor e conecta o nosso cliente', function(){
