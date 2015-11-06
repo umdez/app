@@ -40,7 +40,7 @@ module.exports = {
     "server": "localhost"
   },
   {
-    "type": "anonimo"
+    "type": "anonymous"
   }],
   
   // Armazenamento para os dados, este servidor utiliza sequeliza.
