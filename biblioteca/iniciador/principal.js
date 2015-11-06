@@ -1,8 +1,12 @@
 'use strict'
 
+/*  Aqui iremos carregar tudo que é necessário para o servidor.
+ *
+ */
+
 var xmpp = require('node-xmpp-server');
 
-// Acessamos os arquivos base do nosso servidor.
+// Acessamos os arquivos base da nossa biblioteca.
 var baseBiblioteca = require('../indice');
 
 // Carrega todos os outros arquivos necessários
@@ -14,29 +18,29 @@ var Armazenamento = require('./Armazenamento');
 exports.prosseguir = function(configuracao, pronto) {
   var esteObjeto = {};
   
-  esteObjeto.bdados = null;
   esteObjeto.rotaConexao = null;
   esteObjeto.armazenamento = new Armazenamento(configuracao);
-  
   esteObjeto.gerenciaConexao = new GerenciaConexao();
-  var autenticacao = new Autenticacao(configuracao);
+  esteObjeto.autenticacao = new Autenticacao(configuracao);
+  
+  registrador.debug('Carrega os elementos base do nosso servidor');
   
   esteObjeto.armazenamento.carregar(configuracao)
   .then(function (arm) {
-    esteObjeto.bdados = arm;  
-    registrador.debug('Módulo de armazenamento carrregado');
+    // Carrega os módulos de armazenamento
+    esteObjeto.armazenamento = arm;  
   })
   .then(function () {
-      // Iniciar rota de conexão
-      esteObjeto.rotaConexao = new baseBiblioteca.Rota.RotaConexao(esteObjeto.bdados); 
+      // Inicia rota de conexão
+      esteObjeto.rotaConexao = new baseBiblioteca.Rota.RotaConexao(esteObjeto.armazenamento); 
   })
   .then(function () {
-    // Carregando gerencia de conexão
+    // Carrega gerencia de conexão
     esteObjeto.gerenciaConexao.carregar(esteObjeto.rotaConexao, configuracao);
   })
   .then(function () {
     // Carrega módulos de autenticação
-    return autenticacao.carregar(esteObjeto.rotaConexao, configuracao);
+    return esteObjeto.autenticacao.carregar(esteObjeto.rotaConexao, configuracao);
   })
   .then(function () {
     // parece que tudo ocorreu bem
