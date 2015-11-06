@@ -136,7 +136,7 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
 
           // Modificamos a configuração para conexão setando uma senha errada.
           var confSenhaErrada = clientes[nomeUsuario];
-		      confSenhaErrada.password = confSenhaErrada.password + 'yzzi';
+          confSenhaErrada.password = confSenhaErrada.password + 'yzzi';
 		  
           clts[nomeUsuario] = new xmppCliente(confSenhaErrada);
   
