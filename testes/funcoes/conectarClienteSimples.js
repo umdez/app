@@ -39,11 +39,11 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
       // Para depois conectarmos no servidor utilizando estes dados.	  
       if (configuracao && configuracao.auth && configuracao.auth.length >= 1) {
         var quantAutenticacoes = configuracao.auth.length;
-		    var qtdAutent = configuracao.auth.length - 1;
+        var qtdAutent = configuracao.auth.length - 1;
 
         // Avançamos logo depois de armazenar todos usuários de todos tipos de autenticação
         var pronto = _.after(quantAutenticacoes, function() {
-            avancar();
+          avancar();
         });
         _.each(configuracao.auth, function(autenticacao) {
           // Percorremos as autenticações disponíveis
