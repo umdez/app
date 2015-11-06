@@ -10,9 +10,7 @@ var registrador = require('../nucleo/Registrador')('autenticadoranonimo');
  * Atenção: Esta implementação é planejada para desenvolvimento e testes.
  * não é para ser utilizada no produto final.
  */
-function Anonimo() {
-  this.usuarios = {};
-}
+function Anonimo() {}
 util.inherits(Anonimo, Autenticador);
 
 Anonimo.prototype.nome = 'Anonimo';
@@ -45,7 +43,7 @@ Anonimo.prototype.autenticar = function (opcs) {
     }
     // error
     else {
-      recusar('é necessário ao menos nome de usuário');
+      recusar('é necessário ao menos nome ou jid de usuário');
     }
   });
 };
