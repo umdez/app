@@ -99,7 +99,7 @@ GerenciaConexao.prototype.carregar = function (rotaConexao, configuracao) {
             if (gerCon) {
               gerCon.registerSaslMechanism(xmpp.auth.Plain);
               gerCon.registerSaslMechanism(xmpp.auth.XOAuth2);
-			  gerCon.registerSaslMechanism(xmpp.auth.Anonymous);
+              gerCon.registerSaslMechanism(xmpp.auth.Anonymous);
               rotaConexao.adcGerenciaConexao(gerCon);
             }
           } else {
