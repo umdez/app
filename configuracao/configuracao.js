@@ -38,6 +38,9 @@ module.exports = {
   {
     "type": "oauth2",
     "server": "localhost"
+  },
+  {
+    "type": "anonimo"
   }],
   
   // Armazenamento para os dados, este servidor utiliza sequeliza.
