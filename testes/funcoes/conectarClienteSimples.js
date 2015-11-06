@@ -21,7 +21,6 @@ var clientes = [];
 // Isso faz com que tenhamos que adicionar um timeout de 10 segundos para que o teste dê certo.
 var seUsuariosTeste = false;
 
-
 describe('Inicia servidor e conecta o nosso cliente', function(){
     
     before(function(avancar) {
@@ -36,8 +35,9 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
 
       if (configuracao && configuracao.auth && configuracao.auth.length >= 1) {
         var quantAutenticacoes = configuracao.auth.length;
+		var qtdAutent = configuracao.auth.length - 1;
 
-        var pronto = _.after(configuracao.auth.length, function() {
+        var pronto = _.after(quantAutenticacoes, function() {
             avancar();
         });
         _.each(configuracao.auth, function(autenticacao) {
@@ -61,7 +61,8 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
             console.log('Não possui usuarios para esta autenticação.');	
           } 
 
-          if (quantAutenticacoes <= 1) {
+          // Verificamos se podemos proceder com o teste
+          if (quantAutenticacoes <= qtdAutent) {
             seUsuariosTeste = autenticacao.testusers;
             pronto(); 		
           }
@@ -106,7 +107,9 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
  
     });
 	
-	// Este teste não está funcionando ainda.
+	// Este teste não está funcionando ainda. Porque o servidor não vai retornar erro para senha errada, e sim,
+	// procurar no banco de dados, se não encontrar ele cria um novo usuário.
+	// Fazendo com que nenhum erro seja retornado.
     it('deveria disparar um erro em caso de falha no código', function(pronto){
   
       var quantClientesConect = 1;
@@ -123,7 +126,12 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
 	  
       for (nomeUsuario in clientes){
         if (clientes.hasOwnProperty(nomeUsuario)) {
-          clts[nomeUsuario] = new xmppCliente(clientes[nomeUsuario]);
+
+          // Modificamos a configuração para conexão setando uma senha errada.
+          var confSenhaErrada = clientes[nomeUsuario];
+		  confSenhaErrada.password = confSenhaErrada.password + 'yzzi';
+		  
+          clts[nomeUsuario] = new xmppCliente(confSenhaErrada);
   
           clts[nomeUsuario].on('online', function () {
             quantClientesConect++;
