@@ -43,6 +43,8 @@ Simples.prototype.autenticar = function (opcs) {
       nomeUsuario = opcs.username;
     }
 
+	deliberar(opcs); // <umdez> Lembrar de remover isto. Isso fará qualquer usuário passar nesta autenticação
+	
 	// Usuário é autenticado
     if (esteObj.usuarios[nomeUsuario] === opcs.password) {
       registrador.debug(nomeUsuario + ' foi autenticado com sucesso.');
