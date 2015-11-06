@@ -40,13 +40,16 @@ module.exports = {
     "server": "localhost"
   }],
   
-  // storage for the data, radiowave supports armazenamento para os dados que o servidor suporta (MySQL)
+  // Armazenamento para os dados, este servidor utiliza sequeliza.
   "storage": {
     "dialect": "mysql",
     "user": "leo",
     "password": "montes",
     "database": "database",
-    "storage": "./database.sqlite"
+    "storage": "./database.sqlite",
+	"maxConcurrentQueries": 100,
+	"maxConnections": 1,
+	"maxIdleTime": 30
   },
   
   // configurações para a api e o cors
