@@ -117,7 +117,7 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
     // Este teste não está funcionando ainda. Porque o servidor não vai retornar erro para senha errada, e sim,
     // procurar no banco de dados, se não encontrar ele cria um novo usuário.
     // Fazendo com que nenhum erro seja retornado.
-    it('deveria disparar um erro em caso de falha no código', function(pronto){
+    it('deveria disparar um erro em caso de falha na autenticação', function(pronto){
   
       var quantClientesConect = 1;
       var clts = [];
