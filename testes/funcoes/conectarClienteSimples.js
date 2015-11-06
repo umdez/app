@@ -34,11 +34,14 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
     
 
     beforeEach(function(avancar){
-
+      
+      // Percorremos todos os usuários de cada autenticação e armazenamos o jid e senha deles
+      // Para depois conectarmos no servidor utilizando estes dados.	  
       if (configuracao && configuracao.auth && configuracao.auth.length >= 1) {
         var quantAutenticacoes = configuracao.auth.length;
 		var qtdAutent = configuracao.auth.length - 1;
 
+        // Avançamos logo depois de armazenar todos usuários de todos tipos de autenticação
         var pronto = _.after(quantAutenticacoes, function() {
             avancar();
         });
@@ -71,6 +74,8 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
         });
 
       } else {
+		  
+        // Se não houver usuários como iremos conectar?
         console.log("Não foi possível carregar usuários, nesessário adicionar no arquivo de configuração.");
         process.exit(1);
       }
@@ -109,9 +114,9 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
  
     });
 	
-	// Este teste não está funcionando ainda. Porque o servidor não vai retornar erro para senha errada, e sim,
-	// procurar no banco de dados, se não encontrar ele cria um novo usuário.
-	// Fazendo com que nenhum erro seja retornado.
+    // Este teste não está funcionando ainda. Porque o servidor não vai retornar erro para senha errada, e sim,
+    // procurar no banco de dados, se não encontrar ele cria um novo usuário.
+    // Fazendo com que nenhum erro seja retornado.
     it('deveria disparar um erro em caso de falha no código', function(pronto){
   
       var quantClientesConect = 1;
