@@ -32,22 +32,22 @@ RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
       registrador.debug(formatarRegistro(stream, 'online ' + stream.jid));
     });
 
-	 // Evento disparado quando stream realizar conexão
+    // Evento disparado quando stream realizar conexão
     stream.on('connect', function () {
       registrador.debug(formatarRegistro(stream, 'online ' + stream.jid) ); 
     });
 	
-	// Evento disparado quando stream realiza autenticação.
+    // Evento disparado quando stream realiza autenticação.
     stream.on('authenticate', function(opcs, chamarDepois) {
       registrador.debug('Autenticação do stream.');
     });
 	
-	// Evento disparado quando o stream requisita registro para determinado JID
+    // Evento disparado quando o stream requisita registro para determinado JID
     stream.on('register', function(opcs, chamarDepois) {
       registrador.debug('Registro requisitado pelo stream.');
     });
 	
-	// Evento disparado quando stream desconecta do servidor
+    // Evento disparado quando stream desconecta do servidor
     stream.on('disconnect', function () {
       console.log('Stream desconectado');
     });
@@ -87,10 +87,10 @@ RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
     // <umdez> Evento Obsoleto?
   })
 
-  // Evento ao desconectar, quando um gerente de conexão desconecta.
+  // Evento ao desconectar, quando um stream desconecta.
   GerenConex.on('disconnect', function() {
     // <umdez> Este evento está obsoleto?
-	registrador.debug('Gerente de conexão desconectado');
+    registrador.debug('Stream desconectado');
   });
 };
 
