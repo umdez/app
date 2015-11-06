@@ -13,10 +13,10 @@ var RegistradorEventos = require('../nucleo/RegistradorEventos'); // Bom notar q
  *
  * Afazer: Verificar se os valores de to e from são adequados para o cliente, rejeitar mensagens onde o valor do from não é adequado.
  */
-function RotaConexao(storage) {
+function RotaConexao(armazenamento) {
   XRotas.call(this);
 
-  //this.storage = storage;
+  this.armazenamento = armazenamento;
 
   // Gerência de conexões, por exemplo, tcp, bosh etc
   this.gerenciaConexao = [];
@@ -80,46 +80,42 @@ RotaConexao.prototype.verificarCliente = function (opcs) {
   
   registrador.debug('Autenticação do cliente');
   
-  return new Promessa(function(deliberar, recusar) { // <umdez> Lembrar de remover este código!
-    deliberar();
-  });
-  
-/*
-  var storage = this.storage;
+  var armazenamento = this.armazenamento;
 
-  return new Promessa(function(resolve, reject) {
-    // store the name if we got him
+  return new Promessa(function(deliberar, recusar) {
+ 
+	// Armazena o nome se pegar 
     if (opcs.jid) {
-      registrador.debug('update name of user');
-      // we do not need to wait here, lets do this in background
-      // find or create user and update name
-
-      var transaction = null;
-      var usr = null;
-      storage.sequelize.transaction().then(function (t) {
-        transaction = t;
-        return storage.findOrCreateUser(opcs.jid.toString(), {
+      registrador.debug('atualiza nome do usuário');
+   
+      // Nós não precisamos esperar aqui, vamos fazer isto no plano de fundo
+      // encontrar ou criar usuário e atualizar o nome  
+      var transacao = null;
+      var usu = null;
+      armazenamento.sequelize.transaction().then(function (t) {
+        transacao = t;
+        return armazenamento.encontrarOuCriarUsuario(opcs.jid.toString(), {
           transaction: t
         })
-      }).spread(function(user, created) { // jshint ignore:line
-        usr = user;
+      }).spread(function(usuario, criado) { // jshint ignore:line
+        usu = usuario;
         if (opcs.name) {
-          usr.name = opcs.name;
+          usu.name = opcs.name;
         }
-        return transaction.commit();
+        return transacao.commit();
       }).then(function(){
-        registrador.debug(JSON.stringify(usr));
-        resolve(usr);
+        registrador.debug(JSON.stringify(usu));
+        deliberar(usu);
       }).catch(function(err){
         registrador.error(err);
-        transaction.rollback();
-        reject(err);
+        transacao.rollback();
+        recusar(err);
       })
     } else {
-      reject('parameter for authentication is missing')
+      recusar('parametro de autenticação esta faltando');
     }
   })
-*/
+
 };
 
 RotaConexao.prototype.autenticar = function (opcs, cd) {
@@ -136,7 +132,7 @@ RotaConexao.prototype.autenticar = function (opcs, cd) {
     registrador.debug('Inicia o processo de autenticação');
     var autenticacao = this.procurarMetodoAutenticacao(opcs.saslmech);
     if (autenticacao.length > 0) {
-      autenticacao[0].autenticar(opcs).then(function (cliente) { // Afazer: descobrir este método authenticate.
+      autenticacao[0].autenticar(opcs).then(function (cliente) { // <umdez> na autenticação está faltando acesso aos usuários no banco de dados
         registrador.debug('Clinte xmpp autenticado');
 
         // Unindo propriedades
