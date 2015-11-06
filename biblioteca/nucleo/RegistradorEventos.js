@@ -66,7 +66,7 @@ RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
 
     // Evento disparado quando a conexão do stream foi fechada
     stream.on('close', function () {
-      registrador.debug('Stream fechou conexão: ' + stream.jid.toString());
+      registrador.debug('Stream fechou conexão');
     });
 
     // Evento disparado quando chega uma mensagem enviada pelo stream remetente
