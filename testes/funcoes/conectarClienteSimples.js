@@ -17,6 +17,11 @@ var servidor = require('../../biblioteca/iniciador/principal');
 var quantClientes = 0;
 var clientes = [];
 
+// Lembre-se que ser você informou na configuração o testusers, Vão ser adcionados 10mil usuários.
+// Isso faz com que tenhamos que adicionar um timeout de 10 segundos para que o teste dê certo.
+var seUsuariosTeste = false;
+
+
 describe('Inicia servidor e conecta o nosso cliente', function(){
     
     before(function(avancar) {
@@ -57,6 +62,7 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
           } 
 
           if (quantAutenticacoes <= 1) {
+            seUsuariosTeste = autenticacao.testusers;
             pronto(); 		
           }
         });
@@ -73,7 +79,13 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
       var clts = [];
       var nomeUsuario;
 
-      this.timeout(10000); // 10 segundos de espera para terminar.
+      // Quando temos testes de usuários é necessário darmos mais tempo 
+      // para o cliente conectar e disparar o evento online
+      if (seUsuariosTeste) {
+        this.timeout(30000); // 30 segundos 
+      } else {
+        this.timeout(10000); // 10 segundos 
+      }
   
       for (nomeUsuario in clientes){
         if (clientes.hasOwnProperty(nomeUsuario)) {
@@ -101,7 +113,13 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
       var clts = [];
       var nomeUsuario;
 
-      this.timeout(10000); // 10 segundos de espera para terminar.
+      // Quando temos testes de usuários é necessário darmos mais tempo 
+	  // para o cliente conectar e disparar o evento online
+      if (seUsuariosTeste) {
+        this.timeout(30000); // 30 segundos 
+      } else {
+        this.timeout(10000); // 10 segundos 
+	  }
 	  
       for (nomeUsuario in clientes){
         if (clientes.hasOwnProperty(nomeUsuario)) {
