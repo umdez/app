@@ -9,20 +9,34 @@ var baseBiblioteca = require('../indice');
 var registrador = require('../nucleo/Registrador')('principal'); 
 var GerenciaConexao = require('./GerenciaConexao');
 var Autenticacao = require('../nucleo/Autenticacao');
-//var Armazenamento = require('./Armazenamento');
+var Armazenamento = require('./Armazenamento');
 
 exports.prosseguir = function(configuracao, pronto) {
+  var esteObjeto = {};
   
-  var rotaConexao = new baseBiblioteca.Rota.RotaConexao(/* <umdex> precisamos passar aqui o armazenamento */); // Inicia rota conexões
-  var gerenciaConexao = new GerenciaConexao();
+  esteObjeto.bdados = null;
+  esteObjeto.rotaConexao = null;
+  esteObjeto.armazenamento = new Armazenamento(configuracao);
+  
+  esteObjeto.gerenciaConexao = new GerenciaConexao();
   var autenticacao = new Autenticacao(configuracao);
   
-  registrador.debug('Carregando gerencia de conexão');
-  gerenciaConexao.carregar(rotaConexao, configuracao)
+  esteObjeto.armazenamento.carregar(configuracao)
+  .then(function (arm) {
+    esteObjeto.bdados = arm;  
+    registrador.debug('Módulo de armazenamento carrregado');
+  })
+  .then(function () {
+      // Iniciar rota de conexão
+      esteObjeto.rotaConexao = new baseBiblioteca.Rota.RotaConexao(esteObjeto.bdados); 
+  })
+  .then(function () {
+    // Carregando gerencia de conexão
+    esteObjeto.gerenciaConexao.carregar(esteObjeto.rotaConexao, configuracao);
+  })
   .then(function () {
     // Carrega módulos de autenticação
-    registrador.debug('Iniciando autenticação');
-    return autenticacao.carregar(rotaConexao, configuracao);
+    return autenticacao.carregar(esteObjeto.rotaConexao, configuracao);
   })
   .then(function () {
     // parece que tudo ocorreu bem
