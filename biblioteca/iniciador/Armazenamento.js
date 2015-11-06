@@ -12,10 +12,10 @@ CarregaArmazenamento.prototype.carregar = function (configuracao) {
   var configArmazenamento = configuracao.storage;
 
   // Inicia o módulo de armazenamento
-  var s = new Armazenamento(configArmazenamento);
+  var arm = new Armazenamento(configArmazenamento);
 
   // retorna promessa
-  return s.initialize();
+  return arm.iniciar();
 
 };
 
