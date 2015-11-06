@@ -39,7 +39,7 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
       // Para depois conectarmos no servidor utilizando estes dados.	  
       if (configuracao && configuracao.auth && configuracao.auth.length >= 1) {
         var quantAutenticacoes = configuracao.auth.length;
-		var qtdAutent = configuracao.auth.length - 1;
+		    var qtdAutent = configuracao.auth.length - 1;
 
         // Avançamos logo depois de armazenar todos usuários de todos tipos de autenticação
         var pronto = _.after(quantAutenticacoes, function() {
@@ -124,7 +124,7 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
       var nomeUsuario;
 
       // Quando temos testes de usuários é necessário darmos mais tempo 
-	  // para o cliente conectar e disparar o evento online
+	    // para o cliente conectar e disparar o evento online
       if (seUsuariosTeste) {
         this.timeout(30000); // 30 segundos 
       } else {
@@ -136,7 +136,7 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
 
           // Modificamos a configuração para conexão setando uma senha errada.
           var confSenhaErrada = clientes[nomeUsuario];
-		  confSenhaErrada.password = confSenhaErrada.password + 'yzzi';
+		      confSenhaErrada.password = confSenhaErrada.password + 'yzzi';
 		  
           clts[nomeUsuario] = new xmppCliente(confSenhaErrada);
   
