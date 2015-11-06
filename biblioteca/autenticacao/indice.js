@@ -2,5 +2,6 @@
 
 module.exports = {
   Simples: require('./Simples'),
-  OAuth2: require('./Oauth2')
+  OAuth2: require('./Oauth2'),
+  Anonimo: require('./Anonimo')
 };
