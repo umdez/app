@@ -43,7 +43,11 @@ Simples.prototype.autenticar = function (opcs) {
       nomeUsuario = opcs.username;
     }
 
-	deliberar(opcs); // <umdez> Lembrar de remover isto. Isso fará qualquer usuário passar nesta autenticação
+	// <umdez> Lembrar de remover isto. Isso fará qualquer usuário passar nesta autenticação.
+	// Já está implementado uma forma de procurar pelo usuário no banco de dados
+    // mas ainda não temos cadastrado a senha dos usuários.
+	// @Afazer: Realizar insersão de senha e jid do usuário no momento do registro (Talvez até do login!)	
+	deliberar(opcs); 
 	
 	// Usuário é autenticado
     if (esteObj.usuarios[nomeUsuario] === opcs.password) {
