@@ -45,7 +45,7 @@ OAUTH2.prototype.verificarToken = function (nomeUsuario, oauthToken, cd) {
         registrador.error(error);
         cd('autenticação oauth falhou');
       } else {
-		// Sabemos que o token é valido, verificamos agora se o usuário também é valido
+        // Sabemos que o token é valido, verificamos agora se o usuário também é valido
         var usr = esteObj.verificarUsuario(nomeUsuario, res.body);
         // var usr = res.body;
 
@@ -84,7 +84,7 @@ OAUTH2.prototype.verificarUsuario = function (nomeUsuario, conteudo) {
     conteudo.nomeUsuario = conteudo[this.uidTag];
     return conteudo;
   } else {
-    registrador.debug('fim do if de verificação de usuário');
+    registrador.debug('Autenticação não teve sucesso.');
     return null;
   }
 };

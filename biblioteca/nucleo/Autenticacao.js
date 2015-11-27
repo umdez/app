@@ -6,6 +6,13 @@ var Promessa = require('bluebird');
 
 function Autenticacao() {}
 
+Autenticacao.prototype.anonymous = function (configuracao) {
+  
+  var autentAnon = new baseBiblioteca.Autenticacao.Anonimo();
+  
+  return autentAnon;
+};
+
 Autenticacao.prototype.oauth2 = function (configuracao) {
 
   var autentOauth2 = null;

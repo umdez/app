@@ -172,8 +172,8 @@ RotaConexao.prototype.autenticar = function (opcs, cd) {
 
 RotaConexao.prototype.registrar = function (opcs, cd) {
   // Não está implementado, mas é relevante apenas para servidor.
-  registrador.debug('registrar');
-
+  registrador.debug('Registrar usuário');
+  
   var err = new Error('not allowed');
   err.code = 123;
   err.type = 'abort';

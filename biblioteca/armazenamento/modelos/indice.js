@@ -18,7 +18,7 @@ module.exports = function (sequelize, bd)  {
     .forEach(function (arquivo) {
       var modelo = sequelize.import(path.join(__dirname, arquivo));
 
-	  // Adiciona modelo para um objeto
+	    // Adiciona modelo para um objeto
       bd[modelo.name] = modelo;
       modelos.push(modelo);
     });
