@@ -31,8 +31,8 @@ exports.prosseguir = function(configuracao, pronto) {
     esteObjeto.armazenamento = arm;  
   })
   .then(function () {
-      // Inicia rota de conexão
-      esteObjeto.rotaConexao = new baseBiblioteca.Rota.RotaConexao(esteObjeto.armazenamento); 
+    // Inicia rota de conexão
+    esteObjeto.rotaConexao = new baseBiblioteca.Rota.RotaConexao(esteObjeto.armazenamento); 
   })
   .then(function () {
     // Carrega gerencia de conexão
