@@ -21,7 +21,7 @@ var servidorXmpp = {
     return new Promessa(function (deliberar, recusar) {
       esteObj.opcoes = extend(configuracao, opcoes); 
       deliberar();
-    }
+    });
   },
   
   /* Carregamos o nosso servidor. e chamamos a função cd().
