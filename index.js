@@ -7,16 +7,7 @@ var pastaConfiguracaoPadrao = pasta.join(__dirname, "/configuracao/configuracao.
 
 configuracao.defaults(pastaConfiguracaoPadrao);
 
-configuracao.load(function (args, opcs) {
-
-  // Carrega um arquivo de configuração pelo argv preservando o padrão
-  if(args.length > 0) {
-    opcs.configuracao = args[args.length - 1];
-  }
-
-  if(opcs.configuracao !== pastaConfiguracaoPadrao) {
-    configuracao.merge(require(opcs.configuracao));
-  }
+configuracao.load(function () {
 
   // Chamamos o arquivo principal, ele vai executar os outros.
   var servidor = require('./biblioteca/iniciador/principal');
