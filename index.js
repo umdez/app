@@ -1,21 +1,7 @@
 'use strict'
 
 var Servidor = require('./biblioteca/iniciador/principal');
-var pasta = require('path');
-var configuracao = require('jsconfig');
-var pastaConfiguracaoPadrao = pasta.join(__dirname, "/configuracao/configuracao.js");
-
-configuracao.defaults(pastaConfiguracaoPadrao);
-
-configuracao.load(function () {
-
-  // Chamamos o arquivo principal, ele vai executar os outros.
-  var servidor = require('./biblioteca/iniciador/principal');
-  servidor.prosseguir(configuracao, function() {
-    registrador.debug('Iniciou servidor xmpp com sucesso!');
-  });
-  
-});
+var configuracao = require('/configuracao/configuracao.js');
 
 /* Oferece abstração para o servidor xmpp.
  */
@@ -31,7 +17,7 @@ var servidorXmpp = {
   
   // Carregamos o nosso servidor.
   carregar: function() {
-    servidor.prosseguir(this.opcoes, function() {
+    servidor.prosseguir(configuracao, function() {
       registrador.debug('Iniciou servidor xmpp com sucesso!');
     });
   },
