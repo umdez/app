@@ -17,7 +17,7 @@ var servidorXmpp = {
   
   // Carregamos o nosso servidor.
   carregar: function() {
-    servidor.prosseguir(configuracao, function() {
+    Servidor.prosseguir(configuracao, function() {
       registrador.debug('Iniciou servidor xmpp com sucesso!');
     });
   },
