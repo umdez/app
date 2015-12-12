@@ -36,7 +36,7 @@ exports.prosseguir = function(configuracao, pronto) {
   })
   .then(function () {
     // Carrega gerencia de conexão
-    esteObjeto.gerenciaConexao.carregar(esteObjeto.rotaConexao, configuracao);
+    return esteObjeto.gerenciaConexao.carregar(esteObjeto.rotaConexao, configuracao);
   })
   .then(function () {
     // Carrega módulos de autenticação
