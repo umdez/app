@@ -4,7 +4,7 @@
   "description": "Servidor XMPP utilizando biblioteca node-xmpp-server",
   "keywords": "XMPP Servidor node-xmpp-server jabber XEP",
   "author": "Léo Felippe <leofelippedias@hotmail.com.br>",
-  "main": "./biblioteca/nucleo/principal.js",
+  "main": "./index.js",
   "dependencies": {
     "bluebird": "2.9.25",
     "bunyan": "1.3.5",
@@ -51,5 +51,5 @@
   "engines": {
     "node": ">=0.4.0"
   },
-  "bin": "./iniciar.js"
+  "bin": "./index.js"
 }
