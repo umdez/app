@@ -28,7 +28,7 @@ configuracao.load(function (args, opcs) {
 
 /* Oferece abstração para o servidor xmpp.
  */
-var servidor-xmpp = {
+var servidorXmpp = {
   opcoes: null,
   
   // Iniciamos aqui com as opções informadas.
@@ -46,6 +46,6 @@ var servidor-xmpp = {
   },
   
   Servidor: Servidor
-}
+};
 
-module.exports = servidor-xmpp;
+module.exports = servidorXmpp;
