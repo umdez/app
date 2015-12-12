@@ -1,7 +1,7 @@
 'use strict'
 
 var Servidor = require('./biblioteca/iniciador/principal');
-var configuracao = require('/configuracao/configuracao.js');
+var configuracao = require('./configuracao/configuracao.js');
 
 /* Oferece abstração para o servidor xmpp.
  */
