@@ -54,10 +54,11 @@ OAUTH2.prototype.verificarToken = function (nomeUsuario, oauthToken, cd) {
     });
 };
 
-/** 
- * @param Nome do usuário do usuário que fez a requisição
- * @param Objeto de usuário do usuário que faremos a verificação do token
- * @returns nulo, se o usuário não corresponde com o nome de usuário, ou objeto do usuário
+/* Verificamos aqui o usuário.
+ *
+ * @Parametro {nomeUsuario} O nome do usuário do usuário que fez a requisição
+ * @Parametro {conteudo} Objeto do usuário que faremos a verificação do token
+ * @Retorna Nulo se o usuário não corresponde com o nome de usuário, ou objeto do usuário.
  */
 OAUTH2.prototype.verificarUsuario = function (nomeUsuario, conteudo) {
   registrador.debug('Verificando usuário: ' + nomeUsuario + ' -> ' + conteudo[this.uidTag]);

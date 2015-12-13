@@ -17,18 +17,18 @@ module.exports = {
       "type": "tcp",
       "port": 5222,
       "interface": "0.0.0.0",
-      "domain": "localhost"
+      "domain": "127.0.0.1"
     }, {
       "type": "bosh",
       "port": 5280,
       "path": "http-bind",
       "interface": "0.0.0.0",
-      "domain": "localhost"
+      "domain": "127.0.0.1"
     }, {
       "type": "websocket",
       "port": 5281,
       "interface": "0.0.0.0",
-      "domain": "localhost"
+      "domain": "127.0.0.1"
     }
   ],
 
@@ -49,7 +49,7 @@ module.exports = {
   },
   {
     "type": "oauth2",
-    "server": "localhost"
+    "server": "localhost:3000"
   },
   {
     "type": "anonymous"
@@ -72,7 +72,7 @@ module.exports = {
   // <umdez> Eu ainda não sei como vou implementar a API Rest.
   "api": {
   "activate": true,
-  "port": 8080,
+  "port": 8081,
   "cors": {
     // não utilize * em uso final
     "hosts": ["*"]
