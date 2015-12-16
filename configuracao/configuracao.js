@@ -82,6 +82,5 @@ module.exports = {
     "host": "127.0.0.1",              // Endereço ao qual utilizaremos para a conexão com o banco de dados.
     "port": 3306                      // A porta ao qual utilizaremos para a conexão com o banco de dados.
   }
-}
   
 };
