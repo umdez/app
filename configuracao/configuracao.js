@@ -14,29 +14,29 @@ module.exports = {
 
   // A gerencia de conexões irá carregar os tipos de conexões daqui.
   "connection": [{
-      "type": "tcp",
-      "port": 5222,
-      "interface": "0.0.0.0",
-      "domain": "127.0.0.1"
+      "type": "tcp",                // Conexão do tipo tcp.
+      "port": 5222,                 // Porta utilizada nessa conexão.
+      "interface": "0.0.0.0", 
+      "domain": "127.0.0.1"         // Vamos escutar por conexões neste endereço.
     }, {
-      "type": "bosh",
-      "port": 5280,
-      "path": "http-bind",
+      "type": "bosh",               // Conexão do tipo BOSH
+      "port": 5280,                 // Porta utilizada.
+      "path": "http-bind",          // Extensão que utilizaremos.
       "interface": "0.0.0.0",
-      "domain": "127.0.0.1"
+      "domain": "127.0.0.1"         // Vamos escutar por conexões neste endereço.
     }, {
-      "type": "websocket",
-      "port": 5281,
+      "type": "websocket",          // Conexão do tipo websocket.
+      "port": 5281,                 // Porta utilizada.
       "interface": "0.0.0.0",
-      "domain": "127.0.0.1"
+      "domain": "127.0.0.1"         // Vamos escutar por conexões neste endereço.
     }
   ],
 
   // Configura os mecanismos de autenticação
   "auth": [{
-    "type": "simple",
+    "type": "simple",                // Mecanismo de autenticação SIMPLE.
     "testusers": false,
-    "users": [{
+    "users": [{                      // Nossos usuários de teste.
       "user": "felippe",
       "password": "felippe10"
     }, {
@@ -48,11 +48,11 @@ module.exports = {
     }]
   },
   {
-    "type": "oauth2",
-    "server": "localhost:3000"
+    "type": "oauth2",                 // Mecanismo de autenticação OAUTH2.
+    "server": "localhost:3000"        // O servidor Oauth2.
   },
   {
-    "type": "anonymous"
+    "type": "anonymous"               // Mecanismo de autenticação ANONYMOUS.
   }],
   
   // Armazenamento para os dados, este servidor utiliza sequeliza.
