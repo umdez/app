@@ -81,16 +81,6 @@ module.exports = {
     "maxIdleTime": 30,                
     "host": "127.0.0.1",              // Endereço ao qual utilizaremos para a conexão com o banco de dados.
     "port": 3306                      // A porta ao qual utilizaremos para a conexão com o banco de dados.
-  },
-  
-  // configurações para a api e o cors
-  // <umdez> Eu ainda não sei como vou implementar a API Rest.
-  "api": {
-  "activate": true,
-  "port": 8081,
-  "cors": {
-    // não utilize * em uso final
-    "hosts": ["*"]
   }
 }
   
