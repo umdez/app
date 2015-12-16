@@ -25,7 +25,6 @@
  *  - storage.database (Obrigatório) O nome do banco utilizado.
  *  - storage.user (Obrigatório) O nome do usuário do banco. Não necessário para o SQLite.
  */
-
 module.exports = {
 
   // A gerencia de conexões irá carregar os tipos de conexões daqui.
