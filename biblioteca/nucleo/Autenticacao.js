@@ -1,6 +1,6 @@
 'use strict';
 
-var registrador = require('./Registrador')('autenticacao'); 
+var registrador = require('./Registrador')('Autenticacao'); 
 var baseBiblioteca = require('../indice'); // Acessamos os arquivos base do nosso servidor.
 var Promessa = require('bluebird');
 

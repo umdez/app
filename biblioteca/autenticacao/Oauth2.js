@@ -5,7 +5,7 @@ var Autenticador = require('./Autenticador');
 var Promessa = require('bluebird');
 var JID = require('node-xmpp-core').JID;
 var superagent = require('superagent');
-var registrador = require('../nucleo/Registrador')('autenticadoroauth2');
+var registrador = require('../nucleo/Registrador')('AutenticadorOauth2');
 
 /* Implementação de autenticação do tipo OAUTH2 no lado servidor.
  *
