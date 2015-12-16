@@ -27,7 +27,7 @@
  */
 module.exports = {
 
-  // A gerencia de conexões irá carregar os tipos de conexões daqui.
+  // Conexão: A gerencia de conexões irá carregar os tipos de conexões daqui.
   "connection": [{
       "type": "tcp",                // Conexão do tipo tcp.
       "port": 5222,                 // Porta utilizada nessa conexão.
@@ -47,7 +47,7 @@ module.exports = {
     }
   ],
 
-  // Configura os mecanismos de autenticação
+  // Autenticação: Configura os mecanismos de autenticação
   "auth": [{
     "type": "simple",                // Mecanismo de autenticação SIMPLE.
     "testusers": false,
@@ -70,7 +70,7 @@ module.exports = {
     "type": "anonymous"               // Mecanismo de autenticação ANONYMOUS.
   }],
   
-  // Armazenamento para os dados, este servidor utiliza sequeliza.
+  // Armazenamento: O armazenamento para os dados, este servidor utiliza sequeliza.
   "storage": {
     "dialect": "mysql",               // Dialeto utilizado, pode ser MySQL, SQlite e Postgres.
     "user": "leo",                    // Nome do usuário do banco de dados, não é necessário para o SQlite.
