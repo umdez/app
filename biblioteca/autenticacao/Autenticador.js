@@ -6,7 +6,7 @@ function Autenticador() {}
 
 /* Verifica a correspondencia entre o método que o usuário realizou para autenticação.
  *
- * @Parametro {metodo} metodo utilizado pelo usuário.
+ * @Parametro {metodo} O metodo utilizado pelo usuário. Podendo ser: PLAIN, X-OAUTH2 ou ANONYMOUS.
  */
 Autenticador.prototype.seCorresponder = function (metodo) { // jshint ignore:line
   return false;
