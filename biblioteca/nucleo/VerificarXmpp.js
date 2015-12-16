@@ -7,12 +7,13 @@ var VerificarXmpp = function () {};
 
 VerificarXmpp.prototype = {
 
-  /**
+  /* Realiza verificação do remetente, faz uma comparação do JID remetente com o JID real.
+   * Assim se descobre se ele for válido ou inválido.  
    * @veja http://tools.ietf.org/html/rfc3920#section-4.7.3 <invalid-from/>
    *
-   * @param  node-xmpp stream
-   * @param  node-xmpp xml stanza
-   * @return xmpp error type
+   * @Parametro {stream} Um stream do node-xmpp.
+   * @Parametro {stanza} Uma stanze em XML do node-xmpp.
+   * @Retorna um erro do tipo xmpp.
    */
   remetenteInvalido: function (stream, stanza) {
     var remetenteJID = new JID(stanza.attrs.from);
