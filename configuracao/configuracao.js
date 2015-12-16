@@ -5,9 +5,23 @@
 
 /* Aqui temos a configuração do nosso serviço.
  *
- * @Diretiva {connection} As formas de conexões aceitas. (tcp, bosh, websocket).
+ * @Diretiva {connection} As formas de conexões aceitas. 
+ *  - tcp (Opcional) Aceita conexões do tipo tcp.
+ *  - bosh (Opcional) Aceita conexões do tipo bosh.
+ *  - websocket (Opcional) Aceita conexões do tipo websocket.
+ *
  * @Diretiva {auth} As autenticaçõe disponíveis.
+ *  - simple (Opcional) Aceita aquelas conexões com o mecanismo de autenticação simples.
+ *  - oauth2 (Opcional) Aceita aquelas conexões com o mecanismo de autenticação Oauth2.
+ *  - anonymous (Opcional) Aceita aquelas conexões com o mecanismo de autenticação Anonymous.
+ *
  * @Diretiva {storage} O nosso sistema de armazenamento.
+ *  - dialect (Obrigatório) O dialeto usado. Podendo ser: MySQL, PostGres ou então SQlite.
+ *  - port (Opcional e Recomendado) A porta utilizada para conexão com o nosso banco de dados. Não é necessário para o SQlite.
+ *  - host (Opcional e Recomendado) O endereço do nosso banco de dados. Não é necessário para o SQlite.
+ *  - password (Obrigatório) A nossa senha de conexão com o banco. Não é necessário para o SQlite.
+ *  - database (Obrigatório) O nome do banco utilizado.
+ *  - user (Obrigatório) O nome do usuário do banco. Não necessário para o SQLite.
  */
 
 module.exports = {
