@@ -8,8 +8,9 @@ var modelos = require('./modelos/indice');
 var _ = require('lodash');
 var registrador = require('../nucleo/Registrador')('armazenamento');
 
-/**
- * Manage the database abstraction for radiowave
+/* Contem funções para a gerencia da database.
+ *
+ * @Parametro {opcoes} Contem as opções para configuração
  */
 var Armazenamento = function (opcoes) {
   EmissorEvento.call(this);
@@ -23,12 +24,16 @@ var Armazenamento = function (opcoes) {
 util.inherits(Armazenamento, EmissorEvento);
 
 Armazenamento.prototype.carregarModelos = function () {
-  // Carrega todos os modelos como se fossem propriedades proprias
+  // Carrega todos modelos da pasta modelos e cada um deles é adicionado a este objeto.
+  // Por exemplo, o modelo Slide será armazenado em this.Slide
+  // Sendo assim a gente pode acessar daqui os diversos modelos.
   modelos(this.sequelize, this);
 };
 
-/**
- * Inicia o banco de dados e sincroniza as tabelas se elas não estiverem lá
+/* Inicia o nosso banco de dados e sincroniza as tabelas se elas não estiverem lá
+ *
+ * @Parametro {opcsSincroniza} Contem as opções de configuração.
+ * @Retorna {Promessa} Promessa de recusa ou deliberação.
  */
 Armazenamento.prototype.iniciar = function (opcsSincroniza) {
 
@@ -53,7 +58,7 @@ Armazenamento.prototype.iniciar = function (opcsSincroniza) {
       }
     };
 
-    // could be sqlite, postgres, mysql
+    // Poderia ser sqlite, postgres e mysql
     if (esteObjeto.opc.dialect) {
       opcoes.dialect = esteObjeto.opc.dialect;
     }
@@ -71,16 +76,21 @@ Armazenamento.prototype.iniciar = function (opcsSincroniza) {
       opcoes.storage = esteObjeto.opc.storage;
     }
 
-    // initialize db connection
+    // Inicia conexão com o banco de dados.
     var sequelize = new Sequelize(
       esteObjeto.opc.database,
       esteObjeto.opc.user,
-      esteObjeto.opc.password, opcoes);
+      esteObjeto.opc.password, 
+      opcoes
+    );
+    
+    // Armazenamos o sequelize para utilização das outras classes.
     esteObjeto.sequelize = sequelize;
 
+    // Carrega os arquivos que contem os nossos modelos.
     esteObjeto.carregarModelos();
 
-    // sync models with database
+    // Sincroniza os modelos com o banco de dados.
     sequelize.sync(opcsSincroniza)
       .complete(function (err) {
         if (err) {

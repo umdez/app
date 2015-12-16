@@ -1,5 +1,10 @@
 'use strict';
 
+/* @arquivo indice.js
+ *
+ * Carrega arquivos de modelo desta pasta.
+ */
+
 var fs = require('fs'),
   path = require('path');
 

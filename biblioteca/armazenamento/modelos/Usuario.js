@@ -1,20 +1,24 @@
 'use strict';
 
+/* @arquivo Usuario.js */
+
 var uuid = require('node-uuid');
 
 module.exports = function (sequelize, DataTypes) {
 
+  var VERSAO_BANCO_DADOS = 1;
+
   var Usuario = sequelize.define('Usuario', {
-    name: {
+    name: {                            // Nome do usuário.
       type: DataTypes.STRING,
       validate: {}
     },
-    jid: {
+    jid: {                             // JID do usuário.
       type: DataTypes.STRING,
       unique: true,
       validate: {}
     },
-    uuid: {
+    uuid: {                            // Identificador unico deste usuário.
       type: DataTypes.UUID,
       unique: true,
       defaultValue: uuid.v4,
