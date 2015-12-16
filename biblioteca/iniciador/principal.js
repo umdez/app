@@ -1,7 +1,8 @@
 'use strict'
 
-/*  Aqui iremos carregar tudo que é necessário para o servidor.
- *
+/* @Arquivo principal.js
+ * 
+ * Aqui iremos carregar tudo que é necessário para o servidor.
  */
 
 var xmpp = require('node-xmpp-server');
@@ -15,6 +16,11 @@ var GerenciaConexao = require('./GerenciaConexao');
 var Autenticacao = require('../nucleo/Autenticacao');
 var Armazenamento = require('./Armazenamento');
 
+/* Prossegue com o nosso serviço, iniciando os módulos.
+ *
+ * @Parametro {configuracao} A configuracao do servidor
+ * @Parametro {pronto} Função que será chamada logo após tudo estiver sido carregado com exito.
+ */
 exports.prosseguir = function(configuracao, pronto) {
   var esteObjeto = {};
   

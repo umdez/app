@@ -1,5 +1,10 @@
 'use strict';
 
+/* @Arquivo Armazenamento.js
+ *
+ * Realizamos a gerencia de armazenamento do nosso serviço.
+ */
+ 
 var baseBiblioteca = require('../indice');
 var Armazenamento = baseBiblioteca.Armazenamento;
 var registrador = require('../nucleo/Registrador')('armazenamento'); 
