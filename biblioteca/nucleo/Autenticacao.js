@@ -1,5 +1,10 @@
 'use strict';
 
+/* @Arquivo Autenticacao.js
+ *
+ * Realiza o carregamento dos método de autenticação com base naquilo que foi configurado.
+ */
+
 var registrador = require('./Registrador')('Autenticacao'); 
 var baseBiblioteca = require('../indice'); // Acessamos os arquivos base do nosso servidor.
 var Promessa = require('bluebird');
