@@ -6,22 +6,24 @@
 /* Aqui temos a configuração do nosso serviço.
  *
  * @Diretiva {connection} As formas de conexões aceitas. 
- *  - tcp (Opcional) Aceita conexões do tipo tcp.
- *  - bosh (Opcional) Aceita conexões do tipo bosh.
- *  - websocket (Opcional) Aceita conexões do tipo websocket.
+ *  - connection.type (Obrigatorio) Aquelas conexões aceitas. podendo ser: tcp, bosh ou websocket.
+ *  - connection.port (Opcional e recomendado) A porta a qual esta conexão vai escutar.
+ *  - connection.domain (Opcional e recomendado) O endereço ao qual este tipo de conexão irá escutar por conexões.
+ *  - connection.interface (Opcional) A interface utilizada por esta conexão.
  *
  * @Diretiva {auth} As autenticaçõe disponíveis.
- *  - simple (Opcional) Aceita aquelas conexões com o mecanismo de autenticação simples.
- *  - oauth2 (Opcional) Aceita aquelas conexões com o mecanismo de autenticação Oauth2.
- *  - anonymous (Opcional) Aceita aquelas conexões com o mecanismo de autenticação Anonymous.
+ *  - auth.type (Obrigatório) O tipo de autenticação. podendo ser: simple, oauth2 e ou anonymous.
+ *  - auth.testusers (Opcional) Se essa autenticação vai possuir usuários de teste.
+ *  - auth.users (Opcional) Aqueles usuários desta autenticação.
+ *  - auth.server (Opcional) É obrigatório apenas no tipo oauth2. Esta será a URL utilizada pela autenticação Oauth2.
  *
  * @Diretiva {storage} O nosso sistema de armazenamento.
- *  - dialect (Obrigatório) O dialeto usado. Podendo ser: MySQL, PostGres ou então SQlite.
- *  - port (Opcional e Recomendado) A porta utilizada para conexão com o nosso banco de dados. Não é necessário para o SQlite.
- *  - host (Opcional e Recomendado) O endereço do nosso banco de dados. Não é necessário para o SQlite.
- *  - password (Obrigatório) A nossa senha de conexão com o banco. Não é necessário para o SQlite.
- *  - database (Obrigatório) O nome do banco utilizado.
- *  - user (Obrigatório) O nome do usuário do banco. Não necessário para o SQLite.
+ *  - storage.dialect (Obrigatório) O dialeto usado. Podendo ser: MySQL, PostGres ou então SQlite.
+ *  - storage.port (Opcional e Recomendado) A porta utilizada para conexão com o nosso banco de dados. Não é necessário para o SQlite.
+ *  - storage.host (Opcional e Recomendado) O endereço do nosso banco de dados. Não é necessário para o SQlite.
+ *  - storage.password (Obrigatório) A nossa senha de conexão com o banco. Não é necessário para o SQlite.
+ *  - storage.database (Obrigatório) O nome do banco utilizado.
+ *  - storage.user (Obrigatório) O nome do usuário do banco. Não necessário para o SQLite.
  */
 
 module.exports = {
