@@ -6,7 +6,8 @@ var JID = require('node-xmpp-core').JID;
 var Promessa = require('bluebird');
 var registrador = require('../nucleo/Registrador')('autenticadoranonimo');
 
-/**
+/* Implementação da autenticação no lado servidor utilizando método ANONYMOUS. 
+ *
  * Atenção: Esta implementação é planejada para desenvolvimento e testes.
  * não é para ser utilizada no produto final.
  */

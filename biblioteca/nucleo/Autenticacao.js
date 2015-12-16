@@ -38,7 +38,6 @@ Autenticacao.prototype.simple = function (configuracao) {
   // registra usuário de teste
   if (configuracao.testusers) {
     // Aqui vamos registrar cerca de 10mil usuários para testar
-  
     var baseUsuario = 'carregar'; 
     var baseSenha = 'senha';  // Senha base
     var quantidade = 10000;  //Quantidade de usuários 
@@ -46,7 +45,6 @@ Autenticacao.prototype.simple = function (configuracao) {
     for (var i = 1; i <= quantidade; i++) {
       autentSimples.adcUsuario(baseUsuario + i, baseSenha + i);
     }
-
   }
 
   return autentSimples;

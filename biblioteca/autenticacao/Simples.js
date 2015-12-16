@@ -6,7 +6,8 @@ var JID = require('node-xmpp-core').JID;
 var Promessa = require('bluebird');
 var registrador = require('../nucleo/Registrador')('autenticadorsimples');
 
-/**
+/* Implementação da autenticação no lado servidor utilizando método PLAIN. 
+ *
  * Atenção: Esta implementação é planejada para desenvolvimento e testes.
  * não é para ser utilizada no produto final.
  */
@@ -58,7 +59,7 @@ Simples.prototype.autenticar = function (opcs) {
     // error
     else {
       delete opcs.password;
-      recusar('user not found');
+      recusar('usuário não encontrado.');
     }
   });
 };

@@ -4,15 +4,17 @@ var Promessa = require('bluebird');
 
 function Autenticador() {}
 
-/**
- * @param nome do método
+/* Verifica a correspondencia entre o método que o usuário realizou para autenticação.
+ *
+ * @Parametro {metodo} metodo utilizado pelo usuário.
  */
 Autenticador.prototype.seCorresponder = function (metodo) { // jshint ignore:line
   return false;
 };
 
-/**
- * @param mapa hash-key das opções de opcs
+/* Realiza a autenticação utilizando o método que o usuário utiliza.
+ *
+ * @Parametro {opcs} Um mapa hash-key das opções.
  */
 Autenticador.prototype.autenticar = function (opcs) { // jshint ignore:line
   return new Promessa(function (deliberar, recusar) {

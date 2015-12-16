@@ -7,8 +7,10 @@ var JID = require('node-xmpp-core').JID;
 var superagent = require('superagent');
 var registrador = require('../nucleo/Registrador')('autenticadoroauth2');
 
-/**
- * Implementação do Oauth2 no lado servidor.
+/* Implementação de autenticação do tipo OAUTH2 no lado servidor.
+ *
+ * Atenção: Esta implementação é planejada para desenvolvimento e testes.
+ * não é para ser utilizada no produto final.
  */
 function OAUTH2(configuracoes) {
   this.configuracoes = configuracoes;
@@ -29,14 +31,20 @@ OAUTH2.prototype.seCorresponder = function (metodo) {
   return false;
 };
 
+/* Realizamos a verificação do token utilizado pelo usuário. Para isso nós conectamos ao servidor OAUTH2.
+ * 
+ * @Parametro {nomeUsuario} O nome do usuário que fez a requisição de conexão.
+ * @Parametro {oauthToken} Token informado pelo usuário.
+ * @Parametro {cd} Função chamada ao ser verificado o token informado pelo usuário.
+ */
 OAUTH2.prototype.verificarToken = function (nomeUsuario, oauthToken, cd) {
   var esteObj = this;
 
   registrador.debug('oauth2 chama: ' + this.configuracoes.url);
 
-  // Carrega detalhes do usuário
+  // Conectamos ao servidor OAUTH2 para verificarmos o token utilizado nesta autenticação.
   superagent
-    .get(esteObj.url)
+    .get(esteObj.url)                           // URL do servidor OAUTH2
     .send({})
     .set('content-type', esteObj.contentType)
     .set('Authorization', esteObj.tokenType + ' ' + oauthToken)
@@ -45,7 +53,7 @@ OAUTH2.prototype.verificarToken = function (nomeUsuario, oauthToken, cd) {
         registrador.error(error);
         cd('autenticação oauth falhou');
       } else {
-        // Sabemos que o token é valido, verificamos agora se o usuário também é valido
+        // Sabemos que o token é valido, verificamos agora se o usuário também é valido.
         var usr = esteObj.verificarUsuario(nomeUsuario, res.body);
         // var usr = res.body;
 
@@ -96,7 +104,7 @@ OAUTH2.prototype.autenticar = function (opcs) {
 
   // Gera nome de usuário ldap
   if (opcs.jid) {
-    registrador.debug(nomeUsuario);
+    //registrador.debug(nomeUsuario);
     nomeUsuario = new JID(opcs.jid.toString(), false).getLocal(true);
   } else if (opcs.nomeUsuario) {
     nomeUsuario = opcs.nomeUsuario;
@@ -112,7 +120,7 @@ OAUTH2.prototype.autenticar = function (opcs) {
       if (err) {
         recusar('OAUTH2 Não foi possível autenticar o usuário: ' + opcs.nomeUsuario);
       }
-      // token does not match username
+      // O token não confere com o nome de usuário.
       else if (usuario === null) {
         recusar('OAUTH2 Não foi possível autenticar o usuário: ' + opcs.nomeUsuario);
       }
