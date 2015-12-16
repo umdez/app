@@ -49,7 +49,7 @@ module.exports = {
   },
   {
     "type": "oauth2",                 // Mecanismo de autenticação OAUTH2.
-    "server": "localhost:3000"        // O servidor Oauth2.
+    "server": "localhost:3000"        // O servidor Oauth2. <umdez> Eu ainda não tenho certeza de qual servidor eu vou utilizar. 
   },
   {
     "type": "anonymous"               // Mecanismo de autenticação ANONYMOUS.
