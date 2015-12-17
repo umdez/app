@@ -20,7 +20,8 @@
     "pem": "1.7.2",
     "sequelize": "2.0.0-rc8",
     "superagent": "0.21.0",
-    "websocket": "1.0.22"
+    "websocket": "1.0.22",
+    "servidor-xmpp-restapi": "umdez/servidor-xmpp-restapi"
   },
   "devDependencies": {
     "mocha": "2.3.3",
