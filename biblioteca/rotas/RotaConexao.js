@@ -1,5 +1,11 @@
 'use strict';
 
+/* @Arquivo RotaConexao.js 
+ *
+ * Gerencia as conexões, autenticações e os diversos eventos de um determinado stream.
+ * Os eventos de um stream podem ser de conexão, envio de stanzas, autenticação etc.
+ */
+
 var util = require('util');
 var XRotas = require('../nucleo/XRotas');
 var Promessa = require('bluebird');
@@ -20,7 +26,7 @@ function RotaConexao(armazenamento) {
   // Gerência de conexões, por exemplo, tcp, bosh e websockets.
   this.gerenciaConexao = [];
 
-  // Os métodos de autenticação
+  // Os métodos de autenticação, por exemplo, oauth2, anonymous e plain.
   this.metodosAutenticacao = [];
 
   // As seções conectadas de todas gerências de conexão
@@ -98,7 +104,7 @@ RotaConexao.prototype.verificarCliente = function (opcs) {
 
   return new Promessa(function(deliberar, recusar) {
  
-	  // Armazena o nome se pegar 
+    // Armazena o nome se pegar 
     if (opcs.jid) {
       registrador.debug('atualiza nome do usuário');
    
