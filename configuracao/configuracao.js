@@ -15,6 +15,8 @@
  *  - auth.type (Obrigatório) O tipo de autenticação. podendo ser: simple, oauth2 e ou anonymous.
  *  - auth.testusers (Opcional) Se essa autenticação vai possuir usuários de teste.
  *  - auth.users (Opcional) Aqueles usuários desta autenticação.
+ *  - auth.users.user (Opcional) Nome de usuário desta autenticação.
+ *  - auth.users.password (Opcional) A senha do usuário desta autenticação.
  *  - auth.server (Opcional) É obrigatório apenas no tipo oauth2. Esta será a URL utilizada pela autenticação Oauth2.
  *
  * @Diretiva {storage} O nosso sistema de armazenamento.
