@@ -1,14 +1,21 @@
 'use strict';
 
-var registrador = require('./Registrador')('registradoreventos');
+/* @Arquivo RegistradorEventos.js
+ * 
+ * Aqui faremos o registro para cada um dos eventos dos objetos relacionados a determinado 
+ * gerente de conexões, incluindo as rotas, gerenciamento de sessão, rotas S2S, as conexões etc.
+ * @veja http://xmpp.org/extensions/xep-0160.html
+ */
+
+var registrador = require('./Registrador')('RegistradorEventos');
 
 function RegistradorEventos() {
   this.seLigar = true; // <umdez> Deveria haver uma forma de pegar este valor no arquivo de configurações.
 }
 
-/* Se for ligado vai fazer o registro dos eventos para um dado servidor.
+/* Se for ligado irá fazer o registro dos eventos para um dado servidor.
  *
- * @param o determinado gerenciador de conexões em que iremos registrar os eventos
+ * @Parametro {GerenConex} O determinado gerenciador de conexões em que iremos registrar os eventos
  */
 RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
   
@@ -16,11 +23,6 @@ RegistradorEventos.prototype.adcRegistroEventosPara = function (GerenConex) {
     return;
   }
   
-  // Aqui faremos o registro para cada um dos eventos 
-  // Aqui conseguiremos escutar os eventos em todos objetos ligados aquele gerente de conexão, incluindo as rotas, 
-  // gerenciamento de sessão, rotas S2S, as conexões, etc.
-	  
-  // http://xmpp.org/extensions/xep-0160.html
   var formatarRegistro = function(stream, mensagem) {
     return [ stream.streamId, mensagem].join(' '); 
   }  
