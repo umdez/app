@@ -52,8 +52,8 @@ module.exports = {
   // Autenticação: Configura os mecanismos de autenticação
   "auth": [{
     "type": "simple",                // Mecanismo de autenticação SIMPLE.
-    "testusers": false,
-    "users": [{                      // Nossos usuários de teste.
+    "testusers": false,              // Se ligado irá adicionar 10mil usuários de teste.
+    "users": [{                      // Nossos usuários de teste. Eles serão adicionados ao mecanismo de autenticação Simple.
       "user": "felippe",
       "password": "felippe10"
     }, {
