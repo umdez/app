@@ -5,13 +5,12 @@ var XRotas = require('../nucleo/XRotas');
 var Promessa = require('bluebird');
 var JID = require('node-xmpp-core').JID;
 var VerificarXmpp = require('../nucleo/VerificarXmpp');
-var registrador = require('../nucleo/Registrador')('rotaconexao');
+var registrador = require('../nucleo/Registrador')('RotaConexao');
 var RegistradorEventos = require('../nucleo/RegistradorEventos'); // Bom notar que utilizamos também bunyan.
 
-/**
- * Gerencia as conexões e roteia as solicitações para outras rotas
+/* Gerencia as conexões e roteia as solicitações para outras rotas
  *
- * Afazer: Verificar se os valores de to e from são adequados para o cliente, rejeitar mensagens onde o valor do from não é adequado.
+ * Afazer: Verificar se os valores de to e from são adequados para o cliente, rejeitar mensagems onde o valor do from não é adequado.
  */
 function RotaConexao(armazenamento) {
   XRotas.call(this);
@@ -65,9 +64,9 @@ RotaConexao.prototype.procurarMetodoAutenticacao = function (metodo) {
   return encontrados;
 };
 
-/**
- * Passo adicional de verificação da informação do cliente
- * @param informação de valores chave das opções do cliente
+/* Passo adicional de verificação da informação do cliente
+ *
+ * @Parametro {opcs} As informação de valores chave das opções do cliente
  */
 RotaConexao.prototype.verificarCliente = function (opcs) {
   registrador.debug('Verificando cliente');
@@ -84,7 +83,7 @@ RotaConexao.prototype.verificarCliente = function (opcs) {
 
   return new Promessa(function(deliberar, recusar) {
  
-	// Armazena o nome se pegar 
+	  // Armazena o nome se pegar 
     if (opcs.jid) {
       registrador.debug('atualiza nome do usuário');
    
@@ -180,8 +179,7 @@ RotaConexao.prototype.registrar = function (opcs, cd) {
   cd(err);
 };
 
-/**
- * Comunicação de entrada
+/* Comunicação de entrada
  */
 RotaConexao.prototype.manipular = function (stanza) {
 
@@ -194,8 +192,7 @@ RotaConexao.prototype.manipular = function (stanza) {
   this.emit('stanza', stanza);
 };
 
-/**
- * Comunicação de saida
+/* Comunicação de saida
  */
 RotaConexao.prototype.enviar = function (stanza) {
   var enviado = false
@@ -233,8 +230,7 @@ RotaConexao.prototype.enviar = function (stanza) {
   return enviado;
 };
 
-/**
- * Registra uma rota (A conexão de um cliente JID)
+/* Registra uma rota (A conexão de um cliente JID)
  */
 RotaConexao.prototype.registrarRota = function (jid, cliente) {
   try {
@@ -251,8 +247,7 @@ RotaConexao.prototype.registrarRota = function (jid, cliente) {
   return true;
 };
 
-/**
- * Desregistra uma rota (A conexão de cliente JID)
+/* Desregistra uma rota (A conexão de cliente JID)
  */
 RotaConexao.prototype.desregistrarRota = function (jid) {
   try {
@@ -269,8 +264,7 @@ RotaConexao.prototype.desregistrarRota = function (jid) {
   return true;
 };
 
-/**
- * Retorna a lista de JIDs conectados a um JID especifico.
+/* Retorna a lista de JIDs conectados a um JID especifico.
  */
 RotaConexao.prototype.clientesConectadosPorJid = function (jid) {
   try {
@@ -331,9 +325,8 @@ RotaConexao.prototype.verificarStanza = function (stream, stanza) {
   }
 };
 
-/**
- * Pega um stream e registra manipulação para os eventos
- * @param   stream node-xmpp stream
+/* Pega um stream e registra manipulação para os eventos
+ * @Parametro {stream} Um stream do node-xmpp.
  */
 RotaConexao.prototype.registraStream = function (stream) {
 
