@@ -109,7 +109,7 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
                 jid: usuario.user + '@' + 'localhost',
                 
                 // Utilizaremos o mecanismo de autenticação OAuth2. (Poderia ser: PLAIN, ANONYMOUS ou X-OAUTH2).
-                host: 'localhost:3000',
+                host: 'localhost:3000',  // A URL do servidor Oauth2.
                 oauth2_token: 'algumacoisa' + quantAutenticacoes,
                 oauth2_auth: 'http://www.google.com/talk/protocol/auth',
                 
