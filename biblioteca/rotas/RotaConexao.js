@@ -17,13 +17,13 @@ function RotaConexao(armazenamento) {
 
   this.armazenamento = armazenamento;
 
-  // Gerência de conexões, por exemplo, tcp, bosh etc
+  // Gerência de conexões, por exemplo, tcp, bosh e websockets.
   this.gerenciaConexao = [];
 
-  // Modulos de autenticação
+  // Os métodos de autenticação
   this.metodosAutenticacao = [];
 
-  // Seções conectadas de todas gerências de conexão
+  // As seções conectadas de todas gerências de conexão
   this.secoes = {};
   this.contador = 0;
   
@@ -31,10 +31,16 @@ function RotaConexao(armazenamento) {
   this.registradorEventos = new RegistradorEventos();
   
 }
+
+// Extendemos o XRotas.
 util.inherits(RotaConexao, XRotas);
 
 RotaConexao.prototype.nome = 'RotaConexao';
 
+/* Verificamos se o destinatário desta stanza corresponde.
+ *
+ * @Parametro {stanza} A stanza.
+ */
 RotaConexao.prototype.seCorresponder = function (stanza) {
   var seCorresponder = false;
 
@@ -46,14 +52,22 @@ RotaConexao.prototype.seCorresponder = function (stanza) {
       seCorresponder = true;
     }
   }
-
   return seCorresponder;
 };
 
+/* Aqui adicionamos um determinado método de autenticação. Podendo ser: Simple, Oauth2 ou Anonymous.
+ *
+ * @Parametro {metodo} Um método de autenticação.
+ */
 RotaConexao.prototype.adcMetodoAutenticacao = function (metodo) {
   this.metodosAutenticacao.push(metodo);
 };
 
+/* Procura um determinado método de autenticação.
+ *
+ * @Parametro {metodo} Pode ser X-OAUTH2, ANONYMOUS ou PLAIN.
+ * @Retorna Uma pilha contendo todos aqueles métodos encontrados.
+ */
 RotaConexao.prototype.procurarMetodoAutenticacao = function (metodo) {
   var encontrados = [];
   for (var i = 0; i < this.metodosAutenticacao.length; i++) {
@@ -64,9 +78,10 @@ RotaConexao.prototype.procurarMetodoAutenticacao = function (metodo) {
   return encontrados;
 };
 
-/* Passo adicional de verificação da informação do cliente
+/* Passo adicional de verificação da informação do cliente.
  *
- * @Parametro {opcs} As informação de valores chave das opções do cliente
+ * @Parametro {opcs} As informação de valores chave das opções do cliente.
+ * @Retorna {Promessa} De deliberação ou recusa da verificação.
  */
 RotaConexao.prototype.verificarCliente = function (opcs) {
   registrador.debug('Verificando cliente');
@@ -111,12 +126,17 @@ RotaConexao.prototype.verificarCliente = function (opcs) {
         recusar(err);
       })
     } else {
-      recusar('parametro de autenticação esta faltando');
+      recusar('parameter for authentication is missing');
     }
   })
 
 };
 
+/* Primeiro passo na autenticação do usuário.
+ *
+ * @Parametro {opcs} As informação de valores chave das opções do cliente.
+ * @Parametro {cd} Função que será chamada.
+ */
 RotaConexao.prototype.autenticar = function (opcs, cd) {
   var esteObjeto = this;
 
@@ -169,6 +189,11 @@ RotaConexao.prototype.autenticar = function (opcs, cd) {
   }
 };
 
+/* Realizamos aqui o registro de novo usuário.
+ *
+ * @Parametro {opcs} As informação de valores chave das opções do cliente.
+ * @Parametro {cd} Função que será chamada.
+ */
 RotaConexao.prototype.registrar = function (opcs, cd) {
   // Não está implementado, mas é relevante apenas para servidor.
   registrador.debug('Registrar usuário');
