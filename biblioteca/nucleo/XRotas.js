@@ -1,9 +1,14 @@
 'use strict';
 
+/* @Arquivo XRotas.js
+ * 
+ * Faz o roteamento das stanzas. Verificando se a stanza corresponde, se correponder a stanza é manipulada.
+ */
+
 var util = require('util');
 var EmissorEvento = require('events').EventEmitter;
 var ltx = require('ltx');
-var registrador = require('./Registrador')('xrotas');
+var registrador = require('./Registrador')('XRotas');
 
 function XRotas() {
   
@@ -15,32 +20,34 @@ util.inherits(XRotas, EmissorEvento);
 
 XRotas.prototype.nome = 'XRotas';
 
-/**
- * Tenta saber se o módulo é correspondente para esta stanza.
+/* Tenta saber se o módulo é correspondente para esta stanza.
  * Este método dever otimizado ao máximo porque vai ser chamado constantemente.
+ *
+ * @Parametro {stanza} A stanza que será verificado se corresponde.
  */
 XRotas.prototype.seCorresponder = function (stanza) {}; // jshint ignore:line
 
-/**
- * Manipula as stanzas do xmpp.
- * Este método será chamado logo após ser verificado que a stanza corresponde.
- * Porque precisamos saber se a stanza é adequada para ser manipulada.
+/* Manipula as stanzas do xmpp. Este método será chamado logo após ser 
+ * verificado que a stanza corresponde. Porque precisamos saber se a stanza
+ * é adequada para ser manipulada.
+ *
+ * @Parametro {stanza} A stanza a ser manipulada.
  */
 XRotas.prototype.manipular = function (stanza) {}; // jshint ignore:line
 
-/**
- * Envia mensagens e começa a fazer o roteamento.
+/* Envia mensagems e começa a fazer o roteamento.
+ *
+ * @Parametro {stanza} A stanza a ser enviada.
  */
 XRotas.prototype.enviar = function (stanza) {
   registrador.debug(this.nome + ' envia stanza: ' + stanza.toString());
   this.emit('send', stanza);
 };
 
-/**
- * Envia um erro para o remetente originário da mensagem
+/* Envia um erro para o remetente originário da mensagem
  *
- * @param mensagem stanza vinda do remetente originário
- * @param mensagem de erro a ser enviada para remetente
+ * @Parametro {stanza} A stanza vinda do remetente originário
+ * @Parametro {erro} A mensagem de erro a ser enviada para remetente
  */
 XRotas.prototype.enviarErro = function (stanza, erro) {
 
@@ -61,11 +68,10 @@ XRotas.prototype.enviarErro = function (stanza, erro) {
   this.enviar(resposta);
 };
 
-/**
- * Responde com mensagem de sucesso para o remetente originário
+/* Responde com mensagem de sucesso para o remetente originário
  *
- * @param stanza original do remetente originários
- * @param texto que a mensagem vai conter
+ * @Parametro {stanza} A stanza original do remetente originários
+ * @Parametro {detalhe} O texto que a mensagem vai conter
  */
 XRotas.prototype.enviarSucesso = function (stanza, detalhe) {
 	
@@ -104,7 +110,7 @@ XRotas.prototype.encadearRotas = function (rota) {
   rota.adcEscutaPara(this);
 
   // despacha evento inverso para a rota
-  rota.on('enviar', function (stanza) {
+  rota.on('send', function (stanza) {
     if (stanza) {
       registrador.debug(rota.nome + ' envia para fora para ' + esteObjeto.nome + ':  ' + stanza.attrs.from + ' -> ' + stanza.attrs.to);
       esteObjeto.enviar(stanza);
