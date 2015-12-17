@@ -15,7 +15,7 @@ var registrador = require('../nucleo/Registrador')('principal');
 var GerenciaConexao = require('./GerenciaConexao');
 var Autenticacao = require('../nucleo/Autenticacao');
 var Armazenamento = require('./Armazenamento');
-var ServicoApiRest = require('servidor-xmpp-restapi');
+var ServicoRestApi = require('servidor-xmpp-restapi');
 
 /* Prossegue com o nosso serviço, iniciando os módulos.
  *
