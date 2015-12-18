@@ -110,7 +110,7 @@ describe('Inicia servidor e conecta o nosso cliente', function(){
                 
                 // Utilizaremos o mecanismo de autenticação OAuth2. (Poderia ser: PLAIN, ANONYMOUS ou X-OAUTH2).
                 host: 'localhost:3000',  // A URL do servidor Oauth2.
-                oauth2_token: 'algumacoisa' + quantAutenticacoes,
+                oauth2_token: 'algumacoisa' + quantAutenticacoes,  // <umdez> Verificar se é oauth2_token ou oauth_token.
                 oauth2_auth: 'http://www.google.com/talk/protocol/auth',
                 
                 // O nosso tipo de conexão utilizada aqui será o BOSH. (Poderia ser: websocket, bosh ou tcp).
