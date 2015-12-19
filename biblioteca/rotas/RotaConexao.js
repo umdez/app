@@ -7,7 +7,7 @@
  */
 
 /* Versão 0.0.1-Beta
- * - Verificar se os valores de to e from são adequados para o cliente, rejeitar mensagems onde o valor do from não é adequado. [AFAZER]
+ * - Verificar se os valores de to e from são adequados para o cliente, rejeitar mensagems onde o valor do from não é adequado. (issue #8) [AFAZER]
  */ 
  
 var util = require('util');
