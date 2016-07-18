@@ -25,6 +25,10 @@ module.exports = function (sequelize, DataTypes) {
       validate: {
         isUUID: 4
       }
+    },
+    password: {                        // A senha do usuário. 
+      type: DataTypes.STRING, 
+      validate: {}
     }
   }, {
     associate: function (modelos) {
