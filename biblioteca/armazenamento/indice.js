@@ -32,7 +32,7 @@ var Armazenamento = function (opcoes) {
   this.modelos = [];
 };
 
-util.inherits(Armazenamento, EmissorEvento);
+utilitario.inherits(Armazenamento, EmissorEvento);
 
 Armazenamento.prototype.carregarModelos = function () {
   modelos(this.sequelize, this.modelos);
