@@ -34,7 +34,7 @@ var Armazenamento = function (opcoes) {
 
 utilitario.inherits(Armazenamento, EmissorDeEvento);
 
-Armazenamento.prototype.carregarModelos = function () {
+Armazenamento.prototype.carregarOsModelos = function () {
   modelos(this.sequelize, this.modelos);
   return this.modelos;
 };
