@@ -1,27 +1,24 @@
 'use strict';
 
-/* @Arquivo Armazenamento.js
- *
- * Realizamos a gerencia de armazenamento do nosso serviço.
+/* Realizamos a gerencia de armazenamento do nosso serviço.
  */
  
-var baseBiblioteca = require('../indice');
-var Armazenamento = baseBiblioteca.Armazenamento;
-var registrador = require('../nucleo/Registrador')('armazenamento'); 
+var Base = require('../indice');
+var Armazenamento = Base.Armazenamento;
 
-function CarregaArmazenamento() {}
+function CarregaArmazenamento(configuracao) {
+  this.opcoes = {
+    configuracao: configuracao
+  };
+}
 
-CarregaArmazenamento.prototype.carregar = function (configuracao) {
+CarregaArmazenamento.prototype.carregar = function (modulos) {
 
-  // Carrega configurações
-  var configArmazenamento = configuracao.storage;
+  this.opcoes.modulos = modulos;
 
-  // Inicia o módulo de armazenamento
-  var arm = new Armazenamento(configArmazenamento);
+  var armazenamento = new Base.Armazenamento(this.opcoes);
 
-  // retorna promessa
-  return arm.iniciar();
-
+  return armazenamento.iniciar();
 };
 
 module.exports = CarregaArmazenamento;

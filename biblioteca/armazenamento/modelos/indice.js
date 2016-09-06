@@ -5,15 +5,15 @@
  * Carrega arquivos de modelo desta pasta.
  */
 
-var fs = require('fs'),
-  path = require('path');
+var sistemaDeArquivos = require('fs');
+var pasta = require('path');
 
-module.exports = function (sequelize, bd)  {
-  bd = bd ||  {};
+module.exports = function (sequelize, bd)  {
+  bd = bd ||  {};
   var modelos = [];
 
   // carrega pasta atual
-  fs
+  sistemaDeArquivos
     .readdirSync(__dirname)
     // carrega tudo menos indice.js
     .filter(function (arquivo) {
@@ -21,17 +21,18 @@ module.exports = function (sequelize, bd)  {
     })
     // importa modelo
     .forEach(function (arquivo) {
-      var modelo = sequelize.import(path.join(__dirname, arquivo));
+      var modelo = sequelize.import(pasta.join(__dirname, arquivo));
 
 	    // Adiciona modelo para um objeto
-      bd[modelo.name] = modelo;
-      modelos.push(modelo);
+      bd[modelo.mod.name] = modelo.mod;
+      modelos.push(modelo.mod);
     });
 
   // No momento em que o modelo é definido, vamos carregar as associações
   modelos.forEach(function (modelo) {
-    if (modelo.options.hasOwnProperty('associate')) {
-      modelo.options.associate(bd);
+    
+    if (modelo.options.hasOwnProperty('associar')) {
+      modelo.options.associar(bd);
     }
   });
 

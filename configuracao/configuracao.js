@@ -1,88 +1,120 @@
-/* Exporta objeto contendo os dados de configuração para o nosso servidor XMPP.
+/* Exporta objeto contendo os dados de configuração para o nosso servidor.
  *
- * @Arquivo configuracao.js 
+ * @Arquivo configuracao.js
  */
 
-/* Aqui temos a configuração do nosso serviço.
- *
- * @Diretiva {connection} As formas de conexões aceitas. 
- *  - connection.type (Obrigatorio) Aquelas conexões aceitas. podendo ser: tcp, bosh ou websocket.
- *  - connection.port (Opcional e recomendado) A porta a qual esta conexão vai escutar.
- *  - connection.domain (Opcional e recomendado) O endereço ao qual este tipo de conexão irá escutar por conexões.
- *  - connection.interface (Opcional) A interface utilizada por esta conexão.
- *
- * @Diretiva {auth} As autenticaçõe disponíveis.
- *  - auth.type (Obrigatório) O tipo de autenticação. podendo ser: simple, oauth2 e ou anonymous.
- *  - auth.testusers (Opcional) Se essa autenticação vai possuir usuários de teste.
- *  - auth.users (Opcional) Aqueles usuários desta autenticação.
- *  - auth.users.user (Opcional) Nome de usuário desta autenticação.
- *  - auth.users.password (Opcional) A senha do usuário desta autenticação.
- *  - auth.server (Opcional) É obrigatório apenas no tipo oauth2. Esta será a URL utilizada pela autenticação Oauth2.
- *
- * @Diretiva {storage} O nosso sistema de armazenamento.
- *  - storage.dialect (Obrigatório) O dialeto usado. Podendo ser: MySQL, PostGres ou então SQlite.
- *  - storage.port (Opcional e Recomendado) A porta utilizada para conexão com o nosso banco de dados. Não é necessário para o SQlite.
- *  - storage.host (Opcional e Recomendado) O endereço do nosso banco de dados. Não é necessário para o SQlite.
- *  - storage.password (Obrigatório) A nossa senha de conexão com o banco. Não é necessário para o SQlite.
- *  - storage.database (Obrigatório) O nome do banco utilizado.
- *  - storage.user (Obrigatório) O nome do usuário do banco. Não necessário para o SQLite.
+var config = {};
+
+
+/* @Diretiva {conexao} As formas de conexões aceitas.
+ * 
+ * - connection.tipo (Obrigatorio) Aquelas conexões aceitas. podendo ser: tcp,
+ * bosh ou websocket.
+ * 
+ * - connection.porta (Opcional e recomendado) A porta a qual esta conexão vai
+ * escutar.
+ * 
+ * - connection.dominio (Opcional e recomendado) O endereço ao qual este tipo de
+ * conexão irá escutar por conexões.
+ * 
+ * - connection.interface (Opcional) A interface utilizada por esta conexão.
  */
-module.exports = {
+config.conexao = [
+  {
+    "tipo": "tcp",                
+    "porta": 5222,                 
+    "interface": "0.0.0.0", 
+    "dominio": "127.0.0.1"         
+  }, {
+    "tipo": "bosh",               
+    "porta": 5280,                 
+    "path": "http-bind",          
+    "interface": "0.0.0.0",
+    "dominio": "127.0.0.1"         
+  }, {
+    "tipo": "websocket",          
+    "porta": 5281,                 
+    "interface": "0.0.0.0",
+    "dominio": "127.0.0.1"         
+  }
+];
 
-  // Conexão: A gerencia de conexões irá carregar os tipos de conexões daqui.
-  "connection": [{
-      "type": "tcp",                // Conexão do tipo tcp.
-      "port": 5222,                 // Porta utilizada nessa conexão.
-      "interface": "0.0.0.0", 
-      "domain": "127.0.0.1"         // Vamos escutar por conexões neste endereço.
+/* @Diretiva {autenticacao} As autenticaçõe disponíveis.
+ *
+ * - autenticacao.tipo (Obrigatório) O tipo de autenticação. podendo ser:
+ * simple, oauth2 e ou anonymous.
+ * 
+ * - autenticacao.testarUsuarios (Opcional) Se essa autenticação vai possuir
+ * usuários de teste. (Se ligado irá adicionar 10mil usuários de teste).
+ * 
+ * - autenticacao.usuarios (Opcional) Aqueles usuários desta autenticação.
+ * 
+ * - autenticacao.usuarios.usuario (Opcional) Nome de usuário desta
+ * autenticação.
+ * 
+ * - autenticacao.usuarios.senha (Opcional) A senha do usuário desta
+ * autenticação.
+ * 
+ * - autenticacao.servidor (Opcional) É obrigatório apenas no tipo oauth2. Esta
+ * será a URL utilizada pela autenticação Oauth2.
+ */
+config.autenticacao =  [
+  {
+  "tipo": "simple",           
+  "testarUsuarios": false,    
+  "usuarios": [{                  
+      "usuario": "felippe",
+      "senha": "felippe10"
     }, {
-      "type": "bosh",               // Conexão do tipo BOSH
-      "port": 5280,                 // Porta utilizada.
-      "path": "http-bind",          // Extensão que utilizaremos.
-      "interface": "0.0.0.0",
-      "domain": "127.0.0.1"         // Vamos escutar por conexões neste endereço.
+      "usuario": "junior",
+      "senha": "junior10"
     }, {
-      "type": "websocket",          // Conexão do tipo websocket.
-      "port": 5281,                 // Porta utilizada.
-      "interface": "0.0.0.0",
-      "domain": "127.0.0.1"         // Vamos escutar por conexões neste endereço.
-    }
-  ],
-
-  // Autenticação: Configura os mecanismos de autenticação
-  "auth": [{
-    "type": "simple",                // Mecanismo de autenticação SIMPLE.
-    "testusers": false,              // Se ligado irá adicionar 10mil usuários de teste.
-    "users": [{                      // Nossos usuários de teste. Eles serão adicionados ao mecanismo de autenticação Simple.
-      "user": "felippe",
-      "password": "felippe10"
-    }, {
-      "user": "junior",
-      "password": "junior10"
-    }, {
-      "user": "vinicius",
-      "password": "vinicius10"
+      "usuario": "vinicius",
+      "senha": "vinicius10"
     }]
   },
   {
-    "type": "oauth2",                 // Mecanismo de autenticação OAUTH2.
-    "server": "localhost:3000"        // O servidor Oauth2. <umdez> Eu ainda não tenho certeza de qual servidor eu vou utilizar. 
+    "tipo": "oauth2",             
+    "servidor": "localhost:3000"   
   },
   {
-    "type": "anonymous"               // Mecanismo de autenticação ANONYMOUS.
-  }],
-  
-  // Armazenamento: O armazenamento para os dados, este servidor utiliza sequeliza.
-  "storage": {
-    "dialect": "mysql",               // Dialeto utilizado, pode ser MySQL, SQlite e Postgres.
-    "user": "leo",                    // Nome do usuário do banco de dados, não é necessário para o SQlite.
-    "password": "montes",             // Senha do usuário do banco de dados, não é necessário para o SQlite.
-    "database": "database",           // Nome do nosso banco de dados.
-    "maxConcurrentQueries": 200,      // Valor máximo de consultas concorrentes.
-    "maxConnections": 1,              // Valo máximo de conexões.
-    "maxIdleTime": 30,                
-    "host": "127.0.0.1",              // Endereço ao qual utilizaremos para a conexão com o banco de dados.
-    "port": 3306                      // A porta ao qual utilizaremos para a conexão com o banco de dados.
+    "tipo": "anonymous"            
   }
-  
+];
+
+/* @Diretiva {armazenamento} O nosso sistema de armazenamento. 
+ * 
+ * - armazenamento.dialeto (Obrigatório) O dialeto usado. Podendo ser: mysql,
+ * postgres ou então sqlite.
+ *
+ * - armazenamento.porta (Opcional e Recomendado) A porta utilizada para conexão
+ * com o nosso banco de dados. Exeto para o SQlite.
+ *
+ * - armazenamento.endereco (Opcional e Recomendado) O endereço do nosso banco
+ * de dados. Exeto para o SQlite.
+ *
+ * - armazenamento.senha (Obrigatório) A nossa senha de conexão com o banco.
+ * Exeto para o SQlite.
+ *
+ * - armazenamento.database (Obrigatório) O nome do banco utilizado.
+ *
+ * - armazenamento.usuario  (Obrigatório) O nome do usuário do banco. Exceto
+ * para o SQLite.
+ * 
+ * - armazenamento.seForForcarCriacaoDeNovasTabelas (Opcional) Realiza a remoção
+ * das tabelas existentes e as cria novamente.
+ */
+config.armazenamento = {
+  "dialeto": "mysql"                
+, "usuario": "leo"                  
+, "senha": "montes"                 
+, "database": "database"            
+, "maxDeConsultasConcorrentes": 200 
+, "maxDeConexoes": 1                
+, "maxTempInativo": 30              
+, "endereco": "127.0.0.1"           
+, "porta": 3306      
+, "seForForcarCriacaoDeNovasTabelas": false                
 };
+
+module.exports = config;
