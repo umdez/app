@@ -7,7 +7,7 @@ var xmpp = require('node-xmpp-server');
 
 var Base = require('../indice');
 var registrador = require('../nucleo/Registrador')('principal'); 
-var gerenciaDeConexao = require('./GerenciaDeConexao');
+var GerenciaDeConexao = require('./GerenciaDeConexao');
 //var Autenticacao = require('../nucleo/Autenticacao');
 var Armazenamento = require('./Armazenamento');
 //var ServicoRestApi = require('servidor-xmpp-restapi');
