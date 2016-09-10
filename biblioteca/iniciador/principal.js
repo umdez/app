@@ -18,9 +18,10 @@ exports.prosseguir = function(configuracao, pronto) {
   var modulos = [];
 
   var bd = modulos['bd'] = {
-    'armazenamento': new Armazenamento(configuracao.armazenamento),
-    'modelos': null,
-    'sequelize': null
+    'armazenamento': new Armazenamento(configuracao.armazenamento)
+  , 'instancia': null
+  , 'modelos': null
+  , 'sequelize': null
   };
 
   var rotas = modulos['rotas'] = {
@@ -41,8 +42,8 @@ exports.prosseguir = function(configuracao, pronto) {
 
   registrador.debug('Carregando os módulos base do nosso servidor xmpp.');
 
-  armazenamento.carregar(modulos).then(function (armazenamento) { 
-
+  armazenamento.carregar(modulos).then(function (instancia) { 
+    bd.instancia = instancia;
   })
   .then(function () {
     rotas.rotaDeConexao = new Base.Rota.RotaDeConexao(modulos); 

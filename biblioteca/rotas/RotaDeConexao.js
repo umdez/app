@@ -98,7 +98,7 @@ RotaDeConexao.prototype.verificarCliente = function (opcs) {
       var usu = null;
       bd.sequelize.transaction().then(function (t) {
         transacao = t;
-        return bd.armazenamento.encontrarOuCriarUsuario(opcs.jid.toString(), {
+        return bd.instancia.encontrarOuCriarUsuario(opcs.jid.toString(), {
           transaction: t
         });
       }).spread(function(usuario, criado) { // jshint ignore:line
