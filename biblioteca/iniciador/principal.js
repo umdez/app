@@ -48,7 +48,7 @@ exports.prosseguir = function(configuracao, pronto) {
     rotas.rotaDeConexao = new Base.Rota.RotaDeConexao(modulos); 
   })
   .then(function () {
-    gerenciaDeConexao.carregar(modulos);
+    return gerenciaDeConexao.carregar(modulos);
   })
   .then(function () {
     return autenticacao.carregar(modulos);
