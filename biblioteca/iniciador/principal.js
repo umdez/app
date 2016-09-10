@@ -31,8 +31,13 @@ exports.prosseguir = function(configuracao, pronto) {
     'gerenciaDeConexao': new GerenciaDeConexao(configuracao.conexao)
   };
 
+  var autentic = modulos['autentic'] = {
+    'autenticacao': new Autenticacao(configuracao.autenticacao)
+  };
+
   var armazenamento = bd.armazenamento;
   var gerenciaDeConexao = conexao.gerenciaDeConexao;
+  var autenticacao = autentic.autenticacao;
 
   registrador.debug('Carregando os módulos base do nosso servidor xmpp.');
 

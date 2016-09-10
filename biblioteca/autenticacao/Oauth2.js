@@ -9,8 +9,8 @@ var registrador = require('../nucleo/Registrador')('AutenticadorOauth2');
 
 /* Implementação de autenticação do tipo OAUTH2 no lado servidor.
  *
- * Atenção: Esta implementação é planejada para desenvolvimento e testes.
- * não é para ser utilizada no produto final.
+ * Atenção: Esta implementação é planejada para desenvolvimento e testes. não é
+ * para ser utilizada no produto final.
  */
 function OAUTH2(configuracoes) {
   this.configuracoes = configuracoes;
@@ -31,18 +31,16 @@ OAUTH2.prototype.seCorresponder = function (metodo) {
   return false;
 };
 
-/* Realizamos a verificação do token utilizado pelo usuário. Para isso nós conectamos ao servidor OAUTH2.
- * 
- * @Parametro {nomeUsuario} O nome do usuário que fez a requisição de conexão.
- * @Parametro {oauthToken} Token informado pelo usuário.
- * @Parametro {cd} Função chamada ao ser verificado o token informado pelo usuário.
+/* Realizamos a verificação do token utilizado pelo usuário. Para isso nós
+ * conectamos ao servidor OAUTH2.
  */
 OAUTH2.prototype.verificarToken = function (nomeUsuario, oauthToken, cd) {
   var esteObj = this;
 
   registrador.debug('oauth2 chama: ' + this.configuracoes.url);
 
-  // Conectamos ao servidor OAUTH2 para verificarmos o token utilizado nesta autenticação.
+  // Conectamos ao servidor OAUTH2 para verificarmos o token utilizado nesta
+  // autenticação.
   superagent
     .get(esteObj.url)                           // URL do servidor OAUTH2
     .send({})
@@ -53,7 +51,8 @@ OAUTH2.prototype.verificarToken = function (nomeUsuario, oauthToken, cd) {
         registrador.error(error);
         cd('autenticação oauth falhou');
       } else {
-        // Sabemos que o token é valido, verificamos agora se o usuário também é valido.
+        // Sabemos que o token é valido, verificamos agora se o usuário também é
+        // valido.
         var usr = esteObj.verificarUsuario(nomeUsuario, res.body);
         // var usr = res.body;
 
@@ -62,12 +61,6 @@ OAUTH2.prototype.verificarToken = function (nomeUsuario, oauthToken, cd) {
     });
 };
 
-/* Verificamos aqui o usuário.
- *
- * @Parametro {nomeUsuario} O nome do usuário do usuário que fez a requisição
- * @Parametro {conteudo} Objeto do usuário que faremos a verificação do token
- * @Retorna Nulo se o usuário não corresponde com o nome de usuário, ou objeto do usuário.
- */
 OAUTH2.prototype.verificarUsuario = function (nomeUsuario, conteudo) {
   registrador.debug('Verificando usuário: ' + nomeUsuario + ' -> ' + conteudo[this.uidTag]);
 
