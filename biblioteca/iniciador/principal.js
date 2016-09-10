@@ -8,7 +8,7 @@ var xmpp = require('node-xmpp-server');
 var Base = require('../indice');
 var registrador = require('../nucleo/Registrador')('principal'); 
 var GerenciaDeConexao = require('./GerenciaDeConexao');
-//var Autenticacao = require('../nucleo/Autenticacao');
+var Autenticacao = require('../nucleo/Autenticacao');
 var Armazenamento = require('./Armazenamento');
 //var ServicoRestApi = require('servidor-xmpp-restapi');
 
@@ -60,35 +60,4 @@ exports.prosseguir = function(configuracao, pronto) {
     registrador.error(erro);
   });
 
-/*
-  meuObjt.rotaConexao = null;
-  meuObjt.armazenamento = new Armazenamento(configuracao);
-  meuObjt.gerenciaConexao = new GerenciaConexao();
-  meuObjt.autenticacao = new Autenticacao(configuracao);
-  
-  meuObjt.armazenamento.carregar(configuracao)
-  .then(function (arm) {
-    // Carrega os módulos de armazenamento
-    meuObjt.armazenamento = arm;  
-  })
-  .then(function () {
-    // Inicia rota de conexão
-    meuObjt.rotaConexao = new Base.Rota.RotaConexao(meuObjt.armazenamento); 
-  })
-  .then(function () {
-    // Carrega gerencia de conexão
-    return meuObjt.gerenciaConexao.carregar(meuObjt.rotaConexao, configuracao);
-  })
-  .then(function () {
-    // Carrega módulos de autenticação
-    return meuObjt.autenticacao.carregar(meuObjt.rotaConexao, configuracao);
-  })
-  .then(function () {
-    // parece que tudo ocorreu bem
-    pronto();
-  })
-  .catch(function (err) {
-    registrador.error(err);
-  });
-*/
 }
