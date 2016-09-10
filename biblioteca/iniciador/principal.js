@@ -32,7 +32,6 @@ exports.prosseguir = function(configuracao, pronto) {
   };
 
   var armazenamento = bd.armazenamento;
-  var rota = rotas.rotaDeConexao;
   var gerenciaDeConexao = conexao.gerenciaDeConexao;
 
   registrador.debug('Carregando os módulos base do nosso servidor xmpp.');
@@ -41,12 +40,10 @@ exports.prosseguir = function(configuracao, pronto) {
 
   })
   .then(function () {
-    rota = new Base.Rota.RotaDeConexao(modulos); 
-    console.log(rota);
-    console.log(rotas.rotaDeConexao);
+    rotas.rotaDeConexao = new Base.Rota.RotaDeConexao(modulos); 
   })
   .then(function () {
-    //gerenciaDeConexao.carregar(modulos);
+    gerenciaDeConexao.carregar(modulos);
   })
   .then(function () {
     pronto();
