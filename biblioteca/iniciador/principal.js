@@ -7,7 +7,7 @@ var xmpp = require('node-xmpp-server');
 
 var Base = require('../indice');
 var registrador = require('../nucleo/Registrador')('principal'); 
-//var GerenciaConexao = require('./GerenciaConexao');
+var gerenciaDeConexao = require('./GerenciaDeConexao');
 //var Autenticacao = require('../nucleo/Autenticacao');
 var Armazenamento = require('./Armazenamento');
 //var ServicoRestApi = require('servidor-xmpp-restapi');
@@ -24,11 +24,16 @@ exports.prosseguir = function(configuracao, pronto) {
   };
 
   var rotas = modulos['rotas'] = {
-    'rotaConexao': null
+    'rotaDeConexao': null
+  };
+
+  var conexao = modulos['conexao'] = {
+    'gerenciaDeConexao': new GerenciaDeConexao(configuracao.conexao)
   };
 
   var armazenamento = bd.armazenamento;
-  var rota = rotas.rotaConexao;
+  var rota = rotas.rotaDeConexao;
+  var gerenciaDeConexao = conexao.gerenciaDeConexao;
 
   registrador.debug('Carregando os módulos base do nosso servidor xmpp.');
 
@@ -37,6 +42,9 @@ exports.prosseguir = function(configuracao, pronto) {
   })
   .then(function () {
     rota = new Base.Rota.RotaDeConexao(modulos); 
+  })
+  .then(function () {
+    gerenciaDeConexao.carregar(modulos);
   })
   .then(function () {
     pronto();

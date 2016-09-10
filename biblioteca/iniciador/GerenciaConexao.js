@@ -1,23 +1,24 @@
 'use strict';
 
-/* @Arquivo GerenciaConexao.js
- *
- * Realiza o carregamento das conexões com base naquilo que foi configurado.
+/* Realiza o carregamento das conexões com base naquilo que foi configurado.
  */
 
-var registrador = require('../nucleo/Registrador')('GerenciaConexao');
+var registrador = require('../nucleo/Registrador')('GerenciaDeConexao');
 var baseBiblioteca = require('../indice');
 var Promessa = require('bluebird');
 var pem = require('pem');
 var xmpp = require('node-xmpp-server');
 
-function GerenciaConexao() {}
+function GerenciaDeConexao(configuracao) {
+
+  this.opcoes = {
+    configuracao: configuracao
+  };
+}
 
 /* Carregamos aqui os certificados, serão utilizados nas conexões do tipo tcp.
- *
- * @Retorna {Promessa} De recusa ou delibaração.
  */
-GerenciaConexao.prototype.carregaCertificado = function () {
+GerenciaDeConexao.prototype.carregarCertificado = function () {
   return new Promessa(function (deliberar, recusar) {
     pem.createCertificate({
       days: 1,
@@ -37,13 +38,8 @@ GerenciaConexao.prototype.carregaCertificado = function () {
 };
 
 /* Nossa conexão do tipo tcp.
- *
- * @Parametro {dominio} O dominio que será utilizado por esta conexão.
- * @Parametro {chaves} As chaves do certificado.
- * @Parametro {configuracao} A nossa configuração para este tipo de conexão.
- * @Retorna Objeto deste tipo de conexão.
  */
-GerenciaConexao.prototype.tcp = function (dominio, chaves, configuracao) {
+GerenciaDeConexao.prototype.tcp = function (dominio, chaves, configuracao) {
   // C2S com encriptação TLS
   var cs2 = null;
   var tls = null;
@@ -54,7 +50,7 @@ GerenciaConexao.prototype.tcp = function (dominio, chaves, configuracao) {
   tls.ca = tls.cert;
 
   cs2 = new xmpp.C2SServer({
-    'port': configuracao.port,
+    'port': configuracao.porta,
     'domain': dominio,
     'requestCert': true,
     'rejectUnauthorized': false,
@@ -66,18 +62,13 @@ GerenciaConexao.prototype.tcp = function (dominio, chaves, configuracao) {
 };
 
 /* Nossa conexão do tipo bosh.
- *
- * @Parametro {dominio} O dominio que será utilizado por esta conexão.
- * @Parametro {chaves} As chaves do certificado.
- * @Parametro {configuracao} A nossa configuração para este tipo de conexão.
- * @Retorna Objeto deste tipo de conexão.
  */
-GerenciaConexao.prototype.bosh = function (dominio, chaves, configuracao) { // jshint ignore:line
+GerenciaDeConexao.prototype.bosh = function (dominio, chaves, configuracao) { // jshint ignore:line
   var configuracoesBosh = null;
   
   if (configuracao.port) {
     configuracoesBosh = {
-      'port': configuracao.port,
+      'port': configuracao.porta,
 	    'domain': dominio
     };
   } else {
@@ -92,16 +83,11 @@ GerenciaConexao.prototype.bosh = function (dominio, chaves, configuracao) { // j
 };
 
 /* Nossa conexão do tipo websocket.
- *
- * @Parametro {dominio} O dominio que será utilizado por esta conexão.
- * @Parametro {chaves} As chaves do certificado.
- * @Parametro {configuracao} A nossa configuração para este tipo de conexão.
- * @Retorna Objeto deste tipo de conexão.
  */
-GerenciaConexao.prototype.websocket = function (dominio, chaves, configuracao) {
+GerenciaDeConexao.prototype.websocket = function (dominio, chaves, configuracao) {
   // Servidor Websocket
   var ws = new xmpp.WebSocketServer({
-    'port': configuracao.port,
+    'port': configuracao.porta,
     'domain': dominio,
     'autostart': false
   });
@@ -110,40 +96,40 @@ GerenciaConexao.prototype.websocket = function (dominio, chaves, configuracao) {
   return ws;
 };
 
-/* Percorremos as diversas conexões disponiveis no arquivo de configuração e as carregamos.
- * Os tipos de autenticação disponiveis até o momento são: tcp, bosh e websocket.
- *
- * @Parametro {rotaConexao} Objeto que lida com as rotas de conexões.
- * @Parametro {configuração} A configuração por onde iremos pegar os tipos de conexão.
- * @Retorna {Promessa} Promessa de deliberação ou recusa.
+/* Percorremos as diversas conexões disponiveis no arquivo de configuração e as
+ * carregamos. Os tipos de autenticação disponiveis até o momento são: tcp, bosh
+ * e websocket.
  */
-GerenciaConexao.prototype.carregar = function (rotaConexao, configuracao) {
-  var esteObjeto = this;
+GerenciaDeConexao.prototype.carregar = function (modulos) {
+  var meuObj = this;
+  this.opcoes.modulos = modulos;
+  
   return new Promessa(function (deliberar, recusar) {
     
-	  // Carrega configuração para a gerencia de conexão
-    var gerConConfiguracao = configuracao.connection;
-    
-    if (gerConConfiguracao && gerConConfiguracao.length > 0) {
+    var configuracao = meuObj.opcoes.configuracao; 
+    var rotaDeConexao = meuObj.opcoes.modulos['rotas'].rotaDeConexao;
 
-      esteObjeto.carregaCertificado().then(function (chaves) {
+    if (configuracao && configuracao.length > 0) {
+
+      meuObj.carregarCertificado().then(function (chaves) {
 
         // Percorre cada tipo de conexões
-        gerConConfiguracao.forEach(function (item) {
+        configuracao.forEach(function (item) {
 
-          if (esteObjeto[item.type]) {
-            var gerCon = esteObjeto[item.type](item.domain, chaves, item);
+          if (meuObj[item.tipo]) {
+            var gerCon = meuObj[item.tipo](item.dominio, chaves, item);
             if (gerCon) {
-              // Para cada uma das conexões nós registramos os tipos de autenticação que podem ser utilizadas.
+              // Para cada uma das conexões nós registramos os tipos de
+              // autenticação que podem ser utilizadas.
               gerCon.registerSaslMechanism(xmpp.auth.Plain);
               gerCon.registerSaslMechanism(xmpp.auth.XOAuth2);
               gerCon.registerSaslMechanism(xmpp.auth.Anonymous);
               
-              // Acrescentamos este tipo de conexão a rotaConexao.
-              rotaConexao.adcGerenciaConexao(gerCon);
+              // Acrescentamos este tipo de conexão a rotaDeConexao.
+              rotaDeConexao.adcGerenciaDeConexao(gerCon);
             }
           } else {
-            registrador.warn(item.type + ' não é suportado como gerencia de conexão');
+            registrador.warn(item.tipo + ' não é suportado como gerencia de conexão');
           }
         });
       });
@@ -153,4 +139,4 @@ GerenciaConexao.prototype.carregar = function (rotaConexao, configuracao) {
     }
   });
 };
-module.exports = GerenciaConexao;
+module.exports = GerenciaDeConexao;

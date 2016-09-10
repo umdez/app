@@ -209,17 +209,17 @@ RotaDeConexao.prototype.enviar = function (stanza) {
     var meuObj = this;
 
     if (stanza.attrs && stanza.attrs.to) {
-      var destinatarioJid = new JID(stanza.attrs.to);
+      var destinatario = new JID(stanza.attrs.to);
 
       // Envia para todos clientes locais, também verifica se tem o JID.
-      if (meuObj.secoes.hasOwnProperty(destinatarioJid.bare().toString())) {
+      if (meuObj.secoes.hasOwnProperty(destinatario.bare().toString())) {
         // Agora percorre todas as seções em laço e somente envia para o(s)
         // JID(s) correto(s).
         var fonte;
-        for (fonte in meuObj.secoes[destinatarioJid.bare().toString()]) {
-          if (destinatarioJid.bare().toString() === destinatarioJid.toString() || destinatarioJid.resource === fonte) {
+        for (fonte in meuObj.secoes[destinatario.bare().toString()]) {
+          if (destinatario.bare().toString() === destinatario.toString() || destinatario.resource === fonte) {
             registrador.debug('enviando mensagem para a fonte: ' + fonte);
-            meuObj.secoes[destinatarioJid.bare().toString()][fonte].send(stanza);
+            meuObj.secoes[destinatario.bare().toString()][fonte].send(stanza);
             enviado = true;
           }
         }
@@ -232,8 +232,8 @@ RotaDeConexao.prototype.enviar = function (stanza) {
         registrador.warn('Não pôde ser entregue a stanza: ' + stanza.toString());
       }
     }
-  } catch (err) {
-    registrador.error(err.stack);
+  } catch (erro) {
+    registrador.error(erro.stack);
   }
 
   return enviado;
@@ -335,7 +335,7 @@ RotaDeConexao.prototype.verificarStanza = function (stream, stanza) {
 
 /* Pega um stream e registra manipulação para os eventos
  */
-RotaDeConexao.prototype.registraStream = function (stream) {
+RotaDeConexao.prototype.registrarStream = function (stream) {
 
   this.contador++;
 
@@ -393,7 +393,7 @@ RotaDeConexao.prototype.desregistraStream = function () {
 };
 
 // Adiciona multiplas gerencias de conexões
-RotaDeConexao.prototype.adcGerenciaConexao = function (gerConex) {
+RotaDeConexao.prototype.adcGerenciaDeConexao = function (gerConex) {
   registrador.debug('Carregado gerência de conexão: ' + gerConex.nome);
 
   // Guarda a gerencia de conexões
@@ -402,11 +402,11 @@ RotaDeConexao.prototype.adcGerenciaConexao = function (gerConex) {
   // Anexao aos eventos da conexão e despacha eles para o gerente de rotas.
   var meuObj = this;
   gerConex.on('connect', function (stream) {
-    meuObj.registraStream(stream);
+    meuObj.registrarStream(stream);
   });
   
   // Adiciona o registro de eventos para este gerente de conexões.
-  this.RegistradorDeEventos.adcRegistroEventosPara(gerConex);
+  this.RegistradorDeEventos.adcRegistroDeEventosPara(gerConex);
   
 };
 

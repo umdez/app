@@ -13,7 +13,7 @@ function RegistradorDeEventos() {
 
 /* Se for ligado irá fazer o registro dos eventos para um dado servidor.
  */
-RegistradorDeEventos.prototype.adcRegistroEventosPara = function (GerenciaDeConexao) {
+RegistradorDeEventos.prototype.adcRegistroDeEventosPara = function (GerenciaDeConexao) {
   
   if (!this.seLigar) {
     return;
