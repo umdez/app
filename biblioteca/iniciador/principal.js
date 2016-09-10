@@ -51,6 +51,9 @@ exports.prosseguir = function(configuracao, pronto) {
     gerenciaDeConexao.carregar(modulos);
   })
   .then(function () {
+    return autenticacao.carregar(modulos);
+  })
+  .then(function () {
     pronto();
   })
   .catch(function (erro) {
