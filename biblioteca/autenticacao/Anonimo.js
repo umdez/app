@@ -1,6 +1,6 @@
 'use strict';
 
-var util = require('util');
+var utilitario = require('util');
 var Autenticador = require('./Autenticador');
 var JID = require('node-xmpp-core').JID;
 var Promessa = require('bluebird');
@@ -12,7 +12,7 @@ var registrador = require('../nucleo/Registrador')('AutenticadorAnonimo');
  * para ser utilizada no produto final.
  */
 function Anonimo() {}
-util.inherits(Anonimo, Autenticador);
+utilitario.inherits(Anonimo, Autenticador);
 
 Anonimo.prototype.nome = 'Anonimo';
 

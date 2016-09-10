@@ -1,6 +1,6 @@
 'use strict';
 
-var util = require('util');
+var utilitario = require('util');
 var Autenticador = require('./Autenticador');
 var JID = require('node-xmpp-core').JID;
 var Promessa = require('bluebird');
@@ -14,7 +14,7 @@ var registrador = require('../nucleo/Registrador')('AutenticadorSimples');
 function Simples() {
   this.usuarios = {};
 }
-util.inherits(Simples, Autenticador);
+utilitario.inherits(Simples, Autenticador);
 
 Simples.prototype.nome = 'Simples';
 
@@ -31,7 +31,7 @@ Simples.prototype.seCorresponder = function (metodo) {
 
 Simples.prototype.autenticar = function (opcs) {
   registrador.debug('Autenticar');
-  var esteObj = this;
+  var meuObj = this;
   
   return new Promessa(function (deliberar, recusar) {
 
@@ -51,7 +51,7 @@ Simples.prototype.autenticar = function (opcs) {
     deliberar(opcs); 
 	
 	  // Usuário é autenticado
-    if (esteObj.usuarios[nomeUsuario] === opcs.password) {
+    if (meuObj.usuarios[nomeUsuario] === opcs.password) {
       registrador.debug(nomeUsuario + ' foi autenticado com sucesso.');
       delete opcs.password;
       deliberar(opcs);

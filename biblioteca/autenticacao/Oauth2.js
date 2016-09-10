@@ -1,6 +1,6 @@
 'use strict';
 
-var util = require('util');
+var utilitario = require('util');
 var Autenticador = require('./Autenticador');
 var Promessa = require('bluebird');
 var JID = require('node-xmpp-core').JID;
@@ -20,7 +20,7 @@ function OAUTH2(configuracoes) {
   this.uidTag = configuracoes.uidTag ||  'login';
 
 }
-util.inherits(OAUTH2, Autenticador);
+utilitario.inherits(OAUTH2, Autenticador);
 
 OAUTH2.prototype.nome = 'OAUTH2';
 

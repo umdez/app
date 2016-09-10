@@ -4,7 +4,6 @@
  */
 
 var registrador = require('../nucleo/Registrador')('GerenciaDeConexao');
-var baseBiblioteca = require('../indice');
 var Promessa = require('bluebird');
 var pem = require('pem');
 var xmpp = require('node-xmpp-server');
@@ -27,9 +26,9 @@ GerenciaDeConexao.prototype.carregarCertificado = function () {
       organizationUnit: 'development',
       commonName: 'node-xmpp.org'
 
-    }, function (err, chaves) {
-      if (err) {
-        recusar(err);
+    }, function (erro, chaves) {
+      if (erro) {
+        recusar(erro);
       } else {
         deliberar(chaves);
       }
@@ -37,8 +36,6 @@ GerenciaDeConexao.prototype.carregarCertificado = function () {
   });
 };
 
-/* Nossa conexão do tipo tcp.
- */
 GerenciaDeConexao.prototype.tcp = function (dominio, chaves, configuracao) {
   // C2S com encriptação TLS
   var cs2 = null;
@@ -61,31 +58,24 @@ GerenciaDeConexao.prototype.tcp = function (dominio, chaves, configuracao) {
   return cs2;
 };
 
-/* Nossa conexão do tipo bosh.
- */
 GerenciaDeConexao.prototype.bosh = function (dominio, chaves, configuracao) { // jshint ignore:line
-  var configuracoesBosh = null;
+  var bosh = null;
   
-  if (configuracao.port) {
-    configuracoesBosh = {
+  if (configuracao.porta) {
+    bosh = new xmpp.BOSHServer({
       'port': configuracao.porta,
 	    'domain': dominio
-    };
+    });
+    bosh.nome = 'bosh';
   } else {
     registrador.error('Não foi possivel determinar a porta para o servidor BOSH');
   }
 
-  // Servidor BOSH 
-  var bosh = new xmpp.BOSHServer(configuracoesBosh);
-
-  bosh.nome = 'bosh';
   return bosh;
 };
 
-/* Nossa conexão do tipo websocket.
- */
 GerenciaDeConexao.prototype.websocket = function (dominio, chaves, configuracao) {
-  // Servidor Websocket
+  
   var ws = new xmpp.WebSocketServer({
     'port': configuracao.porta,
     'domain': dominio,
