@@ -16,7 +16,7 @@ var RegistradorDeEventos = require('../nucleo/RegistradorDeEventos');
 function RotaDeConexao(modulos) {
   XRotas.call(this);
 
-  this.armazenamento = modulos['bd'];
+  this.bd = modulos['bd'];
 
   // Gerência de conexões, por exemplo, tcp, bosh e websockets.
   this.gerenciaDeConexao = [];
@@ -84,7 +84,7 @@ RotaDeConexao.prototype.verificarCliente = function (opcs) {
   
   registrador.debug('Autenticação do cliente');
   
-  var armazenamento = this.armazenamento;
+  var bd = this.bd;
 
   return new Promessa(function(deliberar, recusar) {
  
@@ -96,9 +96,9 @@ RotaDeConexao.prototype.verificarCliente = function (opcs) {
       // encontrar ou criar usuário e atualizar o nome  
       var transacao = null;
       var usu = null;
-      armazenamento.sequelize.transaction().then(function (t) {
+      bd.sequelize.transaction().then(function (t) {
         transacao = t;
-        return armazenamento.encontrarOuCriarUsuario(opcs.jid.toString(), {
+        return bd.armazenamento.encontrarOuCriarUsuario(opcs.jid.toString(), {
           transaction: t
         });
       }).spread(function(usuario, criado) { // jshint ignore:line

@@ -113,7 +113,7 @@ Armazenamento.prototype.encontrarOuCriarUsuario = function (jid, opcoes) {
   if (!jid) {
     throw new Error('Está faltando o jid');
   }
-/*
+
   return this.modelos['Usuarios'].findOrCreate({
     where: {
       jid: jid
@@ -122,8 +122,7 @@ Armazenamento.prototype.encontrarOuCriarUsuario = function (jid, opcoes) {
       jid: jid
     }
   }, opcoes);
-  */
-  return false;
+
 };
 
 module.exports = Armazenamento;
