@@ -2,6 +2,6 @@
 
 module.exports = {
   //ComponentRouter: require('./ComponentRouter'),
-  RotaConexao: require('./RotaConexao'),
+  RotaDeConexao: require('./RotaDeConexao'),
   //StarRouter: require('./StarRouter')
 };

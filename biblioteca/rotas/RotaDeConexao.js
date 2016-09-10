@@ -1,97 +1,79 @@
 'use strict';
 
-/* @Arquivo RotaConexao.js 
- *
- * Gerencia as conexões, autenticações e os diversos eventos de um determinado stream.
- * Os eventos de um stream podem ser de conexão, envio de stanzas, autenticação etc.
+/* Gerencia as conexões, autenticações e os diversos eventos de um determinado
+ * stream. Os eventos de um stream podem ser de conexão, envio de stanzas,
+ * autenticação etc.
  */
-
-/* Versão 0.0.1-Beta
- * - Verificar se os valores de to e from são adequados para o cliente, rejeitar mensagems onde o valor do from não é adequado. (issue #8) [AFAZER]
- */ 
  
-var util = require('util');
+var utilitario = require('util');
 var XRotas = require('../nucleo/XRotas');
 var Promessa = require('bluebird');
 var JID = require('node-xmpp-core').JID;
 var VerificarXmpp = require('../nucleo/VerificarXmpp');
-var registrador = require('../nucleo/Registrador')('RotaConexao');
-var RegistradorEventos = require('../nucleo/RegistradorEventos'); // Bom notar que utilizamos também bunyan.
+var registrador = require('../nucleo/Registrador')('RotaDeConexao');
+var RegistradorDeEventos = require('../nucleo/RegistradorDeEventos'); 
 
-/* Gerencia as conexões e roteia as solicitações para outras rotas
- */
-function RotaConexao(armazenamento) {
+function RotaDeConexao(modulos) {
   XRotas.call(this);
 
-  this.armazenamento = armazenamento;
+  this.armazenamento = modulos['bd'];
 
   // Gerência de conexões, por exemplo, tcp, bosh e websockets.
-  this.gerenciaConexao = [];
+  this.gerenciaDeConexao = [];
 
   // Os métodos de autenticação, por exemplo, oauth2, anonymous e plain.
-  this.metodosAutenticacao = [];
+  this.metodosDeAutenticacao = [];
 
   // As seções conectadas de todas gerências de conexão
   this.secoes = {};
   this.contador = 0;
   
   // Vamos registrar aqueles eventos relacionados ao stream
-  this.registradorEventos = new RegistradorEventos();
-  
+  this.RegistradorDeEventos = new RegistradorDeEventos();
 }
 
-// Extendemos o XRotas.
-util.inherits(RotaConexao, XRotas);
+utilitario.inherits(RotaDeConexao, XRotas);
 
-RotaConexao.prototype.nome = 'RotaConexao';
+RotaDeConexao.prototype.nome = 'RotaDeConexao';
 
 /* Verificamos se o destinatário desta stanza corresponde.
- *
- * @Parametro {stanza} A stanza.
  */
-RotaConexao.prototype.seCorresponder = function (stanza) {
+RotaDeConexao.prototype.seCorresponder = function (stanza) {
   var seCorresponder = false;
 
   if (stanza.attrs && stanza.attrs.to) {
-    var paraJid = new JID(stanza.attrs.to);
+    var destinatario = new JID(stanza.attrs.to);
 
     // envia para todos clientes locais, verifica se o JID confere
-    if (this.secoes.hasOwnProperty(paraJid.bare().toString())) {
+    if (this.secoes.hasOwnProperty(destinatario.bare().toString())) {
       seCorresponder = true;
     }
   }
   return seCorresponder;
 };
 
-/* Aqui adicionamos um determinado método de autenticação. Podendo ser: Simple, Oauth2 ou Anonymous.
- *
- * @Parametro {metodo} Um método de autenticação.
+/* Aqui adicionamos um determinado método de autenticação. Podendo ser: Simple,
+ * Oauth2 ou Anonymous.
  */
-RotaConexao.prototype.adcMetodoAutenticacao = function (metodo) {
-  this.metodosAutenticacao.push(metodo);
+RotaDeConexao.prototype.adcMetodoDeAutenticacao = function (metodo) {
+  this.metodosDeAutenticacao.push(metodo);
 };
 
-/* Procura um determinado método de autenticação.
- *
- * @Parametro {metodo} Pode ser X-OAUTH2, ANONYMOUS ou PLAIN.
- * @Retorna Uma pilha contendo todos aqueles métodos encontrados.
+/* Busca um determinado método de autenticação.
  */
-RotaConexao.prototype.procurarMetodoAutenticacao = function (metodo) {
+RotaDeConexao.prototype.buscMetodoDeAutenticacao = function (metodo) {
   var encontrados = [];
-  for (var i = 0; i < this.metodosAutenticacao.length; i++) {
-    if (this.metodosAutenticacao[i].seCorresponder(metodo)) {
-      encontrados.push(this.metodosAutenticacao[i]);
+  for (var i = 0; i < this.metodosDeAutenticacao.length; i++) {
+    if (this.metodosDeAutenticacao[i].seCorresponder(metodo)) {
+      encontrados.push(this.metodosDeAutenticacao[i]);
     }
   }
   return encontrados;
 };
 
 /* Passo adicional de verificação da informação do cliente.
- *
- * @Parametro {opcs} As informação de valores chave das opções do cliente.
- * @Retorna {Promessa} De deliberação ou recusa da verificação.
  */
-RotaConexao.prototype.verificarCliente = function (opcs) {
+RotaDeConexao.prototype.verificarCliente = function (opcs) {
   registrador.debug('Verificando cliente');
 
   for (var atrb in opcs) {
@@ -141,12 +123,9 @@ RotaConexao.prototype.verificarCliente = function (opcs) {
 };
 
 /* Primeiro passo na autenticação do usuário.
- *
- * @Parametro {opcs} As informação de valores chave das opções do cliente.
- * @Parametro {cd} Função que será chamada.
  */
-RotaConexao.prototype.autenticar = function (opcs, cd) {
-  var esteObjeto = this;
+RotaDeConexao.prototype.autenticar = function (opcs, cd) {
+  var meuObj = this;
 
   try {
 
@@ -157,9 +136,9 @@ RotaConexao.prototype.autenticar = function (opcs, cd) {
     }
 
     registrador.debug('Inicia o processo de autenticação');
-    var autenticacao = this.procurarMetodoAutenticacao(opcs.saslmech);
+    var autenticacao = this.buscMetodoDeAutenticacao(opcs.saslmech);
     if (autenticacao.length > 0) {
-      autenticacao[0].autenticar(opcs).then(function (cliente) { // <umdez> na autenticação está faltando acesso aos usuários no banco de dados
+      autenticacao[0].autenticar(opcs).then(function (cliente) { 
         registrador.debug('Clinte xmpp autenticado');
 
         // Unindo propriedades
@@ -169,7 +148,7 @@ RotaConexao.prototype.autenticar = function (opcs, cd) {
           }
         }
 
-        esteObjeto.verificarCliente(opcs).then(function () {
+        meuObj.verificarCliente(opcs).then(function () {
           registrador.debug('Cliente verificado')
           // Chamar depois
           cd(null, opcs);
@@ -186,7 +165,6 @@ RotaConexao.prototype.autenticar = function (opcs, cd) {
       });
 
     } else {
-      // throw error
       registrador.error('Não foi possivel manipular %s', opcs.saslmech);
       cd(new Error('user not found'));
     }
@@ -198,11 +176,8 @@ RotaConexao.prototype.autenticar = function (opcs, cd) {
 };
 
 /* Realizamos aqui o registro de novo usuário.
- *
- * @Parametro {opcs} As informação de valores chave das opções do cliente.
- * @Parametro {cd} Função que será chamada.
  */
-RotaConexao.prototype.registrar = function (opcs, cd) {
+RotaDeConexao.prototype.registrar = function (opcs, cd) {
   // Não está implementado, mas é relevante apenas para servidor.
   registrador.debug('Registrar usuário');
   
@@ -214,7 +189,7 @@ RotaConexao.prototype.registrar = function (opcs, cd) {
 
 /* Comunicação de entrada
  */
-RotaConexao.prototype.manipular = function (stanza) {
+RotaDeConexao.prototype.manipular = function (stanza) {
 
   // Verifica se nós temos o endereço do remetente
   if (!stanza.attrs.to) {
@@ -227,23 +202,24 @@ RotaConexao.prototype.manipular = function (stanza) {
 
 /* Comunicação de saida
  */
-RotaConexao.prototype.enviar = function (stanza) {
+RotaDeConexao.prototype.enviar = function (stanza) {
   var enviado = false
   try {
     // registrador.debug('Entregar:' + stanza.root().toString());
-    var esteObjeto = this;
+    var meuObj = this;
 
     if (stanza.attrs && stanza.attrs.to) {
       var destinatarioJid = new JID(stanza.attrs.to);
 
       // Envia para todos clientes locais, também verifica se tem o JID.
-      if (esteObjeto.secoes.hasOwnProperty(destinatarioJid.bare().toString())) {
-        // Agora percorre todas as seções em laço e somente envia para o(s) JID(s) correto(s).
+      if (meuObj.secoes.hasOwnProperty(destinatarioJid.bare().toString())) {
+        // Agora percorre todas as seções em laço e somente envia para o(s)
+        // JID(s) correto(s).
         var fonte;
-        for (fonte in esteObjeto.secoes[destinatarioJid.bare().toString()]) {
+        for (fonte in meuObj.secoes[destinatarioJid.bare().toString()]) {
           if (destinatarioJid.bare().toString() === destinatarioJid.toString() || destinatarioJid.resource === fonte) {
             registrador.debug('enviando mensagem para a fonte: ' + fonte);
-            esteObjeto.secoes[destinatarioJid.bare().toString()][fonte].send(stanza);
+            meuObj.secoes[destinatarioJid.bare().toString()][fonte].send(stanza);
             enviado = true;
           }
         }
@@ -265,7 +241,7 @@ RotaConexao.prototype.enviar = function (stanza) {
 
 /* Registra uma rota (A conexão de um cliente JID)
  */
-RotaConexao.prototype.registrarRota = function (jid, cliente) {
+RotaDeConexao.prototype.registrarRota = function (jid, cliente) {
   try {
     registrador.debug('Registrado cliente ' + jid);
     // Afazer: Verificar por conflitos
@@ -282,7 +258,7 @@ RotaConexao.prototype.registrarRota = function (jid, cliente) {
 
 /* Desregistra uma rota (A conexão de cliente JID)
  */
-RotaConexao.prototype.desregistrarRota = function (jid) {
+RotaDeConexao.prototype.desregistrarRota = function (jid) {
   try {
     registrador.debug('desregistrar jid ' + jid);
     if (jid && jid.bare()) {
@@ -299,7 +275,7 @@ RotaConexao.prototype.desregistrarRota = function (jid) {
 
 /* Retorna a lista de JIDs conectados a um JID especifico.
  */
-RotaConexao.prototype.clientesConectadosPorJid = function (jid) {
+RotaDeConexao.prototype.clientesConectadosPorJid = function (jid) {
   try {
     jid = new JID(jid);
     if (!this.secoes.hasOwnProperty(jid.bare().toString())) {
@@ -320,7 +296,7 @@ RotaConexao.prototype.clientesConectadosPorJid = function (jid) {
   }
 };
 
-RotaConexao.prototype.conecta = function (jid, stream) {
+RotaDeConexao.prototype.conecta = function (jid, stream) {
   try {
     if (jid) {
       this.registrarRota(jid, stream);
@@ -331,7 +307,7 @@ RotaConexao.prototype.conecta = function (jid, stream) {
   }
 };
 
-RotaConexao.prototype.desconecta = function (jid, stream) {
+RotaDeConexao.prototype.desconecta = function (jid, stream) {
   try {
     this.desregistrarRota(jid, stream);
     this.emit('disconnect', jid);
@@ -340,10 +316,9 @@ RotaConexao.prototype.desconecta = function (jid, stream) {
   }
 };
 
-RotaConexao.prototype.verificarStanza = function (stream, stanza) {
+RotaDeConexao.prototype.verificarStanza = function (stream, stanza) {
   try {
-    // Verificar xmpp stanza
-    var erro = VerificarXmpp.remetenteInvalido(stream, stanza);
+    var erro = VerificarXmpp.seRemetenteForInvalido(stream, stanza);
 
     if (erro) {
       registrador.warn(erro);
@@ -359,24 +334,23 @@ RotaConexao.prototype.verificarStanza = function (stream, stanza) {
 };
 
 /* Pega um stream e registra manipulação para os eventos
- * @Parametro {stream} Um stream do node-xmpp.
  */
-RotaConexao.prototype.registraStream = function (stream) {
+RotaDeConexao.prototype.registraStream = function (stream) {
 
   this.contador++;
 
   registrador.debug('registrar novo stream ' + this.contador);
 
-  var esteObjeto = this;
+  var meuObj = this;
 
   // Permite ao desenvolvedor autenticar usuários da forma que quiser.
   stream.on('authenticate', function (opcs, cd) {
-    esteObjeto.autenticar(opcs, cd);
+    meuObj.autenticar(opcs, cd);
   });
 
   // Permite ao desenvolvedor aceitar e registrar o JID da forma que quiser.
   stream.on('register', function (opcs, cd) {
-    esteObjeto.registrar(opcs, cd);
+    meuObj.registrar(opcs, cd);
   });
 
   // Eventos de socket advinda de uma conexão node-xmpp
@@ -389,60 +363,60 @@ RotaConexao.prototype.registraStream = function (stream) {
   stream.on('online', function () {
     registrador.debug('ONLINE: ' + stream.jid.toString());
     // despacha o evento para a rota
-    esteObjeto.conecta(stream.jid, stream);
+    meuObj.conecta(stream.jid, stream);
   });
 
   stream.on('close', function () {
     // Despacha evento para a rota
-    esteObjeto.desconecta(stream.jid, stream);
+    meuObj.desconecta(stream.jid, stream);
   });
 
   stream.on('stanza', function (stanza) {
     registrador.debug('mensagem recebida : ' + stanza.toString());
-    esteObjeto.verificarStanza(stream, stanza);
+    meuObj.verificarStanza(stream, stanza);
   });
 
   // Eventos base da rota
   stream.on('connect', function () {
-    esteObjeto.contador--;
-    esteObjeto.conecta(stream.jid, stream);
+    meuObj.contador--;
+    meuObj.conecta(stream.jid, stream);
   });
 
   stream.on('disconnect', function () {
-    esteObjeto.desconecta(stream.jid, stream);
+    meuObj.desconecta(stream.jid, stream);
   });
 
 };
 
-RotaConexao.prototype.desregistraStream = function () {
+RotaDeConexao.prototype.desregistraStream = function () {
   // Afazer: Implementar este método.
 };
 
 // Adiciona multiplas gerencias de conexões
-RotaConexao.prototype.adcGerenciaConexao = function (gerConex) {
+RotaDeConexao.prototype.adcGerenciaConexao = function (gerConex) {
   registrador.debug('Carregado gerência de conexão: ' + gerConex.nome);
 
   // Guarda a gerencia de conexões
-  this.gerenciaConexao.push(gerConex);
+  this.gerenciaDeConexao.push(gerConex);
 
   // Anexao aos eventos da conexão e despacha eles para o gerente de rotas.
-  var esteObjeto = this;
+  var meuObj = this;
   gerConex.on('connect', function (stream) {
-    esteObjeto.registraStream(stream);
+    meuObj.registraStream(stream);
   });
   
   // Adiciona o registro de eventos para este gerente de conexões.
-  this.registradorEventos.adcRegistroEventosPara(gerConex);
+  this.RegistradorDeEventos.adcRegistroEventosPara(gerConex);
   
 };
 
 // Encerra o gerente de conexões
-RotaConexao.prototype.pararConexoes = function () {
+RotaDeConexao.prototype.pararConexoes = function () {
   registrador.info('Encerradas todas as conexões');
 
-  for (var i = 0, l = this.gerenciaConexao.length; i < l; i++) {
-    this.gerenciaConexao[i].shutdown();
+  for (var i = 0, l = this.gerenciaDeConexao.length; i < l; i++) {
+    this.gerenciaDeConexao[i].shutdown();
   }
 };
 
-module.exports = RotaConexao;
+module.exports = RotaDeConexao;

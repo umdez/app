@@ -6,7 +6,7 @@ var Sequelize = require('sequelize');
 var SequelizeI18N = require('sequelize-i18n');
 var Promessa = require('bluebird');
 var modelos = require('./modelos/indice');
-var registrador = require('../nucleo/registrador')('armazenamento');
+var registrador = require('../nucleo/Registrador')('armazenamento');
 var _ = require('lodash');
 
 var Armazenamento = function (opcoes) {

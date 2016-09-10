@@ -1,18 +1,16 @@
 'use strict'
 
-/* @Arquivo principal.js
- * 
- * Aqui iremos carregar tudo que é necessário para o servidor.
+/* Aqui iremos carregar tudo que é necessário para o servidor.
  */
 
 var xmpp = require('node-xmpp-server');
 
-var baseBiblioteca = require('../indice');
+var Base = require('../indice');
 var registrador = require('../nucleo/Registrador')('principal'); 
-var GerenciaConexao = require('./GerenciaConexao');
-var Autenticacao = require('../nucleo/Autenticacao');
+//var GerenciaConexao = require('./GerenciaConexao');
+//var Autenticacao = require('../nucleo/Autenticacao');
 var Armazenamento = require('./Armazenamento');
-var ServicoRestApi = require('servidor-xmpp-restapi');
+//var ServicoRestApi = require('servidor-xmpp-restapi');
 
 exports.prosseguir = function(configuracao, pronto) {
   var meuObjt = {};
@@ -25,12 +23,20 @@ exports.prosseguir = function(configuracao, pronto) {
     'sequelize': null
   };
 
-  var armazenamento = bd.armazenamento;
+  var rotas = modulos['rotas'] = {
+    'rotaConexao': null
+  };
 
-  registrador.debug('Carregando os módulos base do nosso servidor.');
+  var armazenamento = bd.armazenamento;
+  var rota = rotas.rotaConexao;
+
+  registrador.debug('Carregando os módulos base do nosso servidor xmpp.');
 
   armazenamento.carregar(modulos).then(function (armazenamento) { 
 
+  })
+  .then(function () {
+    rota = new Base.Rota.RotaDeConexao(modulos); 
   })
   .then(function () {
     pronto();
@@ -45,8 +51,6 @@ exports.prosseguir = function(configuracao, pronto) {
   meuObjt.gerenciaConexao = new GerenciaConexao();
   meuObjt.autenticacao = new Autenticacao(configuracao);
   
-  
-  
   meuObjt.armazenamento.carregar(configuracao)
   .then(function (arm) {
     // Carrega os módulos de armazenamento
@@ -54,7 +58,7 @@ exports.prosseguir = function(configuracao, pronto) {
   })
   .then(function () {
     // Inicia rota de conexão
-    meuObjt.rotaConexao = new baseBiblioteca.Rota.RotaConexao(meuObjt.armazenamento); 
+    meuObjt.rotaConexao = new Base.Rota.RotaConexao(meuObjt.armazenamento); 
   })
   .then(function () {
     // Carrega gerencia de conexão
