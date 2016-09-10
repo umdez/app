@@ -100,7 +100,7 @@ RotaDeConexao.prototype.verificarCliente = function (opcs) {
         transacao = t;
         return armazenamento.encontrarOuCriarUsuario(opcs.jid.toString(), {
           transaction: t
-        })
+        });
       }).spread(function(usuario, criado) { // jshint ignore:line
         usu = usuario;
         if (opcs.name) {

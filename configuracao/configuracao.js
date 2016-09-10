@@ -61,7 +61,7 @@ config.conexao = [
 config.autenticacao =  [
   {
   "tipo": "simple",           
-  "testarUsuarios": false,    
+  "testarUsuarios": true,    
   "usuarios": [{                  
       "usuario": "felippe",
       "senha": "felippe10"
