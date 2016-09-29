@@ -11,13 +11,15 @@ module.exports = function (database, DataTypes) {
 
   var Usuarios = database.define('Usuarios', {
 
-    nome: { type: DataTypes.STRING, validate: {} },  // Nome do nosso usuário
+    nome: { type: DataTypes.STRING, validate: {} },  
+
+    sobrenome: { type: DataTypes.STRING, validate: {} },
 
     jid: { type: DataTypes.STRING, unique: true, validate: {} },  // JID do usuário.
 
     uuid: { type: DataTypes.UUID, unique: true, defaultValue: uuid.v4, validate: { isUUID: 4 } },  // Identificador unico deste usuário.
     
-    senha: { type: DataTypes.STRING, validate: {} },  // A senha do usuário.
+    senha: { type: DataTypes.STRING, validate: {} },  
     
     estatos: { type: DataTypes.STRING, validate: {} }  // Validado? Bloqueado?
   }, {
