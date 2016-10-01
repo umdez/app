@@ -30,13 +30,13 @@ module.exports = function (database, DataTypes) {
       modelos.Usuarios.hasOne(modelos.UsuarioEndereco, { foreignKey: 'usuario_id' }); 
 
       // <umdez> realizando este teste de escopo abaixo.
-      modelos.Usuarios.addScope("projetos", function () {
-        return {
-          include: [
-            { model: modelos.Projetos }
-          ]
-        }
-      });
+      //modelos.Usuarios.addScope("projetos", function () {
+      //  return {
+      //    include: [
+      //      { model: modelos.Projetos }
+      //    ]
+      //  }
+      //});
     },
     classMethods:{
       
