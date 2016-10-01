@@ -1,6 +1,6 @@
 'use strict';
 
-/* @arquivo Usuario.js */
+/* @arquivo Usuarios.js */
 
 var uuid = require('node-uuid');
 var bcrypt = require('bcrypt-nodejs');
@@ -13,9 +13,9 @@ module.exports = function (database, DataTypes) {
 
     nome: { type: DataTypes.STRING, validate: {} },  
 
-    sobrenome: { type: DataTypes.STRING, validate: {} },
+    sobrenome: { type: DataTypes.STRING, validate: {} },  
 
-    jid: { type: DataTypes.STRING, unique: true, validate: {} },  // JID do usuário.
+    jid: { type: DataTypes.STRING, unique: true, validate: {} },  // Jabber Identifier do usuário.
 
     uuid: { type: DataTypes.UUID, unique: true, defaultValue: uuid.v4, validate: { isUUID: 4 } },  // Identificador unico deste usuário.
     
@@ -23,10 +23,20 @@ module.exports = function (database, DataTypes) {
     
     estatos: { type: DataTypes.STRING, validate: {} }  // Validado? Bloqueado?
   }, {
-
+    
     associar: function (modelos) {
       modelos.Usuarios.belongsTo(modelos.Funcoes, { foreignKey: 'funcao_id', as: 'Funcoes' });
       modelos.Usuarios.hasMany(modelos.Projetos, { foreignKey: 'usuario_id' }); 
+      modelos.Usuarios.hasOne(modelos.UsuarioEndereco, { foreignKey: 'usuario_id' }); 
+
+      // <umdez> realizando este teste de escopo abaixo.
+      modelos.Usuarios.addScope("projetos", function () {
+        return {
+          include: [
+            { model: modelos.Projetos }
+          ]
+        }
+      });
     },
     classMethods:{
       

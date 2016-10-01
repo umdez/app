@@ -16,7 +16,7 @@ module.exports = function (database, DataTypes) {
   }, {
     
     associar: function (modelos) {
-      modelos.Projetos.belongsTo(modelos.Usuarios, { foreignKey: 'usuario_id', as: 'Usuarios' });
+      modelos.UsuarioEndereco.belongsTo(modelos.Usuarios, { foreignKey: 'usuario_id', as: 'Usuarios' });
     },
     underscored: true, // Lembre-se de que utilizamos o padrão snake_case
     timestamps: false,
